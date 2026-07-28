@@ -12,7 +12,7 @@ export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 // page (`/`), the legal pages, and the app routes are reserved and return no
 // creator. The SPA rewrite in vercel.json makes these deep links / refreshes
 // serve index.html.
-const RESERVED_PATHS = ['privacy-policy', 'terms', 'contact', 'pricing', 'how-it-works', 'influence', 'dashboard', 'waitlist', 'auth-success', 'dev-login', 'preview', 'landing', 'browse', 'instagram-lookup']
+const RESERVED_PATHS = ['privacy-policy', 'terms', 'contact', 'pricing', 'how-it-works', 'influence', 'dashboard', 'waitlist', 'auth-success', 'dev-login', 'preview', 'landing', 'browse', 'instagram-lookup', 'roster']
 
 // Admin-managed landing page content (Admin → Landing page): the creator
 // testimonials and the brand logos. Returns empty lists on ANY failure so the
@@ -92,6 +92,18 @@ export async function fetchCreators() {
   if (!res.ok || data.success === false) throw new Error(data.error || 'Failed to load creators')
   return data.creators || []
 }
+// Curated creator roster for one brand/agency — powers /roster/:slug.
+export async function fetchRoster(slug) {
+  const res = await fetch(`${API_BASE}/public/roster/${encodeURIComponent(slug)}`)
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok || data.success === false) {
+    const err = new Error(data.error || 'Failed to load this page')
+    err.status = res.status
+    throw err
+  }
+  return { brandName: data.brandName || '', brandLogo: data.brandLogo || '', creators: data.creators || [] }
+}
+
 export function resolveUsername() {
   if (typeof window === 'undefined') return ''
   const path = window.location.pathname.replace(/\/+$/, '')

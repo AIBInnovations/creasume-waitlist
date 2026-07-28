@@ -678,7 +678,7 @@ export default function ProfileHero() {
                 (() => {
                   const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
                   return (
-                    <div className="flex flex-col items-start gap-1 order-first self-center lg:order-none lg:self-auto" style={{ marginTop: -30 }}>
+                    <div className="flex flex-col items-start gap-1 order-first self-center lg:order-none lg:self-auto" style={{ marginTop: -15 }}>
                       <span
                         className="text-[10px] md:text-xs font-medium"
                         style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.03em' }}
