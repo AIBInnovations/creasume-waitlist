@@ -687,7 +687,7 @@ export default function ProfileHero() {
                         Managed by
                       </span>
                       <span
-                        className="founding-badge inline-flex items-center justify-start gap-1.5 rounded-full text-sm md:text-base font-bold whitespace-nowrap"
+                        className="founding-badge inline-flex items-center justify-start gap-1 rounded-full text-sm md:text-base font-bold whitespace-nowrap"
                         style={{
                           fontFamily: FONT,
                           color: bc.text,
@@ -695,7 +695,7 @@ export default function ProfileHero() {
                           // so a short brand name (e.g. "ugc") doesn't look tiny
                           // next to it.
                           minWidth: 160,
-                          padding: '4px 9px 4px 3px',
+                          padding: '4px 9px 4px 1px',
                           background:
                             `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +
                             `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
