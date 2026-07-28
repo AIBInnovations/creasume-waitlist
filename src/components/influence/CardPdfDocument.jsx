@@ -275,7 +275,7 @@ export default function CardPdfDocument({ data, cardUrl }) {
                 background: hexToRgba(bc.ringMid, 0.16),
                 border: `1px solid ${bc.ringMid}`,
                 whiteSpace: 'nowrap',
-              }}>Brought by {CREATOR.broughtByBrand.name}</span>
+              }}>Managed by {CREATOR.broughtByBrand.name}</span>
             )
           })() : CREATOR.isFoundingCreator && (
             <span style={{

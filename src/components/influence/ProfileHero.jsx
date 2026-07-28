@@ -692,7 +692,7 @@ export default function ProfileHero() {
                         textShadow: '0 1px 2px rgba(0,0,0,0.5)',
                         letterSpacing: '0.02em',
                       }}
-                      title={`Brought by ${CREATOR.broughtByBrand.name}`}
+                      title={`Managed by ${CREATOR.broughtByBrand.name}`}
                     >
                       {CREATOR.broughtByBrand.logo && (
                         <img
@@ -701,7 +701,7 @@ export default function ProfileHero() {
                           className="w-4 h-4 rounded-full object-contain"
                         />
                       )}
-                      Brought by {CREATOR.broughtByBrand.name}
+                      Managed by {CREATOR.broughtByBrand.name}
                     </span>
                   )
                 })()

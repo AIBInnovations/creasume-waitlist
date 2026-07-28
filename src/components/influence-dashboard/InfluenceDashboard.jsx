@@ -1771,7 +1771,7 @@ export default function InfluenceDashboard({ username }) {
                     const bc = deriveBadgeColors(broughtByBrand.color)
                     return (
                       <span
-                        title={`Brought by ${broughtByBrand.name}`}
+                        title={`Managed by ${broughtByBrand.name}`}
                         className="founding-badge inline-flex shrink-0 items-center gap-1 rounded-full text-[10.5px] font-bold whitespace-nowrap px-2 py-0.5"
                         style={{
                           fontFamily: FONT,
@@ -1783,7 +1783,7 @@ export default function InfluenceDashboard({ username }) {
                         {broughtByBrand.logo && (
                           <img src={broughtByBrand.logo} alt="" className="w-3 h-3 rounded-full object-contain" />
                         )}
-                        Brought by {broughtByBrand.name}
+                        Managed by {broughtByBrand.name}
                       </span>
                     )
                   })()
