@@ -718,7 +718,7 @@ export default function ProfileHero() {
                             />
                           </span>
                         )}
-                        <span className="flex-1 text-center">{CREATOR.broughtByBrand.name}</span>
+                        <span className="flex-1 text-left">{CREATOR.broughtByBrand.name}</span>
                       </span>
                     </div>
                   )
