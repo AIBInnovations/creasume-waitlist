@@ -686,7 +686,7 @@ export default function ProfileHero() {
                         color: bc.text,
                         padding: '7px 24px',
                         background:
-                          'linear-gradient(180deg, #2a1d07 0%, #150e03 100%) padding-box, ' +
+                          `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +
                           `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
                         border: '3px solid transparent',
                         textShadow: '0 1px 2px rgba(0,0,0,0.5)',

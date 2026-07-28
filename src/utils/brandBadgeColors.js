@@ -4,12 +4,16 @@
 // always rendering gold. Falls back to the original gold palette when no
 // color is available (e.g. color extraction failed on the uploaded logo).
 
-const GOLD = { ringLight: '#FBE7A0', ringMid: '#D8A93C', ringDark: '#9A701F', text: '#F6E3A8' }
+// fillTop/fillBottom are a very dark tint of the SAME hue as the ring — the
+// original gold badge's interior (#2a1d07 → #150e03) is itself just gold at
+// low lightness, not an unrelated brown, so this generalizes that same look
+// to any brand color instead of leaving the interior gold/black regardless.
+const GOLD = { ringLight: '#FBE7A0', ringMid: '#D8A93C', ringDark: '#9A701F', text: '#F6E3A8', fillTop: '#2a1d07', fillBottom: '#150e03' }
 // Neutral "platinum" ring for logos with no real hue (black/white/gray marks —
 // e.g. Puma, Nike). Forcing a fake hue onto an achromatic color is what used
 // to turn these into an unintended salmon/brown tint (hue defaults to 0° when
 // r=g=b, and boosting saturation at hue 0 is red).
-const SILVER = { ringLight: '#F1F3F5', ringMid: '#ADB5BD', ringDark: '#495057', text: '#F1F3F5' }
+const SILVER = { ringLight: '#F1F3F5', ringMid: '#ADB5BD', ringDark: '#495057', text: '#F1F3F5', fillTop: '#1c1e21', fillBottom: '#0c0d0f' }
 
 function hexToHsl(hex) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex || '').trim())
@@ -70,5 +74,7 @@ export function deriveBadgeColors(hex) {
     ringMid: hslToHex(h, sat, 0.55),
     ringDark: hslToHex(h, sat, 0.34),
     text: hslToHex(h, sat * 0.55, 0.84),
+    fillTop: hslToHex(h, sat * 0.8, 0.10),
+    fillBottom: hslToHex(h, sat * 0.8, 0.045),
   }
 }
