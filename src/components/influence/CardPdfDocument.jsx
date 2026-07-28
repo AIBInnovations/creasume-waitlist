@@ -269,9 +269,10 @@ export default function CardPdfDocument({ data, cardUrl }) {
             // color, which is often too dark/light to read against the dark PDF.
             const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
             return (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+                <span style={{ fontSize: 10, fontWeight: 500, color: MUTED }}>Managed by</span>
                 <span style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8,
                   // Match the Founding pill's own footprint so a short brand
                   // name doesn't render smaller than it.
                   minWidth: 130,
@@ -293,9 +294,8 @@ export default function CardPdfDocument({ data, cardUrl }) {
                       />
                     </span>
                   )}
-                  {CREATOR.broughtByBrand.name}
+                  <span style={{ flex: 1, textAlign: 'center' }}>{CREATOR.broughtByBrand.name}</span>
                 </span>
-                <span style={{ fontSize: 10, fontWeight: 500, color: MUTED }}>Managed by</span>
               </div>
             )
           })() : CREATOR.isFoundingCreator && (

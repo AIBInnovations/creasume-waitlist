@@ -1770,10 +1770,13 @@ export default function InfluenceDashboard({ username }) {
                   (() => {
                     const bc = deriveBadgeColors(broughtByBrand.color)
                     return (
-                      <div className="flex flex-col items-start gap-0.5">
+                      <div className="flex flex-col items-end gap-0.5">
+                        <span className="text-[9px] font-medium" style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.4)' }}>
+                          Managed by
+                        </span>
                         <span
                           title={`Managed by ${broughtByBrand.name}`}
-                          className="founding-badge inline-flex shrink-0 items-center gap-1.5 rounded-full text-[10.5px] font-bold whitespace-nowrap pl-1 pr-2.5 py-1"
+                          className="founding-badge inline-flex shrink-0 items-center gap-1.5 rounded-full text-[10.5px] font-bold whitespace-nowrap pl-1 pr-2.5 py-0.5"
                           style={{
                             fontFamily: FONT,
                             color: bc.text,
@@ -1787,15 +1790,12 @@ export default function InfluenceDashboard({ username }) {
                           {broughtByBrand.logo && (
                             <span
                               className="inline-flex items-center justify-center rounded-full overflow-hidden shrink-0"
-                              style={{ width: 18, height: 18, background: '#fff' }}
+                              style={{ width: 16, height: 16, background: '#fff' }}
                             >
-                              <img src={broughtByBrand.logo} alt="" className="w-full h-full object-contain" style={{ padding: 2 }} />
+                              <img src={broughtByBrand.logo} alt="" className="w-full h-full object-contain" style={{ padding: 1.5 }} />
                             </span>
                           )}
-                          {broughtByBrand.name}
-                        </span>
-                        <span className="text-[9px] font-medium" style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.4)' }}>
-                          Managed by
+                          <span className="flex-1 text-center">{broughtByBrand.name}</span>
                         </span>
                       </div>
                     )

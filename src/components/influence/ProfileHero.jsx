@@ -679,17 +679,23 @@ export default function ProfileHero() {
                 (() => {
                   const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
                   return (
-                    <div className="flex flex-col items-center gap-1 order-first self-center lg:order-none lg:self-auto">
+                    <div className="flex flex-col items-end gap-1 order-first self-center lg:order-none lg:self-auto" style={{ marginTop: -30 }}>
                       <span
-                        className="founding-badge inline-flex items-center justify-center gap-1.5 rounded-full text-xs md:text-sm font-bold whitespace-nowrap"
+                        className="text-[10px] md:text-xs font-medium"
+                        style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.03em' }}
+                      >
+                        Managed by
+                      </span>
+                      <span
+                        className="founding-badge inline-flex items-center justify-start gap-1.5 rounded-full text-sm md:text-base font-bold whitespace-nowrap"
                         style={{
                           fontFamily: FONT,
                           color: bc.text,
                           // Never shrink below the Founding badge's own footprint,
                           // so a short brand name (e.g. "ugc") doesn't look tiny
                           // next to it.
-                          minWidth: 190,
-                          padding: '6px 24px 6px 8px',
+                          minWidth: 160,
+                          padding: '4px 9px 4px 3px',
                           background:
                             `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +
                             `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
@@ -702,23 +708,17 @@ export default function ProfileHero() {
                         {CREATOR.broughtByBrand.logo && (
                           <span
                             className="inline-flex items-center justify-center rounded-full overflow-hidden shrink-0"
-                            style={{ width: 28, height: 28, background: '#fff' }}
+                            style={{ width: 24, height: 24, background: '#fff' }}
                           >
                             <img
                               src={CREATOR.broughtByBrand.logo}
                               alt=""
                               className="w-full h-full object-contain"
-                              style={{ padding: 3 }}
+                              style={{ padding: 2.5 }}
                             />
                           </span>
                         )}
-                        {CREATOR.broughtByBrand.name}
-                      </span>
-                      <span
-                        className="text-[10px] md:text-xs font-medium"
-                        style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.03em' }}
-                      >
-                        Managed by
+                        <span className="flex-1 text-center">{CREATOR.broughtByBrand.name}</span>
                       </span>
                     </div>
                   )
