@@ -201,7 +201,7 @@ export default function PricingPage() {
     <div className="relative min-h-screen flex flex-col overflow-x-clip text-white">
       <Seo
         title="Pricing — Creasume Creator Plans"
-        description="Simple plans for creators. Start free with a verified Influence Card, or upgrade for packages, custom branding, analytics and brand inquiries. Cancel anytime."
+        description="Simple plans for creators. Start free with a verified dynamic media kit, or upgrade for packages, custom branding, analytics and brand inquiries. Cancel anytime."
         path="/pricing"
       />
 

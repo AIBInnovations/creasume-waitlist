@@ -87,7 +87,7 @@ export default function HowItWorks() {
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-clip bg-black text-white">
       <Seo
-        title="How Creasume Works — Build Your Verified Creator Card"
+        title="How Creasume Works — Build a Verified Dynamic Media Kit"
         description="Connect Instagram, auto-generate a verified media kit from your real stats, and share one professional link with brands. See how Creasume works in three steps."
         path="/how-it-works"
       />

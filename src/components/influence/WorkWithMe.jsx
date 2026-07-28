@@ -184,7 +184,7 @@ export default function WorkWithMe() {
         className="relative z-10 text-center mt-24 md:mt-32 px-4 text-base md:text-lg font-medium"
         style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.72)' }}
       >
-        &ldquo;Create a similar influence card for your Instagram profile{' '}
+        &ldquo;Create a verified dynamic media kit for your Instagram profile{' '}
         <a
           href="/"
           onClick={(e) => { e.preventDefault(); goToPath('/') }}
@@ -220,7 +220,7 @@ export default function WorkWithMe() {
             color: '#0B0B27',
           }}
         >
-          Create Your Influence Card
+          Create Your Media Kit
         </motion.a>
       </motion.div>
 

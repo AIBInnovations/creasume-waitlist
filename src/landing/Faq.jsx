@@ -10,14 +10,14 @@ const FAQS = [
     q: 'What is Creasume?',
     a: (
       <>
-        Creasume is a platform that turns your content into a professional creator profile and media kit.
+        Creasume is a creator platform that turns your content and verified social insights into a dynamic media kit.
         It helps you showcase:
         <ul className="mt-3 space-y-1 list-disc list-inside text-white/70">
           <li>Your best content</li>
           <li>Your performance (views, engagement)</li>
           <li>Your creator identity</li>
         </ul>
-        <span className="block mt-3">All in one clean, shareable link you can send to brands, clients, or recruiters.</span>
+        <span className="block mt-3">Everything stays current in one clean, shareable link you can send to brands, clients, or recruiters.</span>
       </>
     ),
   },
@@ -35,11 +35,40 @@ const FAQS = [
   },
   {
     q: 'How does Creasume help me get brand deals?',
-    a: 'Creasume packages your numbers into a brand-ready media kit and surfaces you to brands actively looking for creators. Structured inquiry requests replace messy DMs, so collaborations move faster.',
+    a: 'Creasume packages your verified social insights, audience data, past work and pricing into a brand-ready dynamic media kit. Discoverable profiles and structured inquiries help creators find and close brand deals without relying only on DMs.',
   },
   {
     q: 'Will brands be able to discover me on Creasume?',
-    a: 'Yes. Verified creator profiles are discoverable by brands browsing for partners in your niche, giving you visibility you would not get from a private feed alone.',
+    a: 'Yes. Public, verified dynamic media kits are discoverable by brands browsing for creators by niche, audience and campaign fit, giving you visibility beyond a private social feed.',
+  },
+]
+
+// Plain-text mirror of FAQS, used to build FAQPage structured data (JSON-LD
+// requires plain strings; the first answer above is JSX with a bullet list).
+export const FAQS_PLAIN = [
+  {
+    q: 'What is Creasume?',
+    a: 'Creasume is a creator platform that turns your content and verified social insights into a dynamic media kit. It helps you showcase your best content, your performance (views, engagement) and your creator identity — all in one clean, shareable link you can send to brands, clients, or recruiters.',
+  },
+  {
+    q: 'How is Creasume different from a normal resume or portfolio?',
+    a: 'A resume is static and a portfolio is manual. Creasume pulls live, verified stats from your social accounts and builds a profile that updates itself — so brands always see your current reach, not a screenshot from months ago.',
+  },
+  {
+    q: 'Is my data safe on Creasume?',
+    a: 'Yes. Your data is provided directly through official Meta APIs with view-only access to your public statistics. We never post on your behalf and never share your personal data with third parties.',
+  },
+  {
+    q: 'What data does Creasume access?',
+    a: 'Only the public-facing metrics you consent to share — follower counts, reach, engagement and your published content. We do not access private messages, passwords, or anything you have not approved.',
+  },
+  {
+    q: 'How does Creasume help me get brand deals?',
+    a: 'Creasume packages your verified social insights, audience data, past work and pricing into a brand-ready dynamic media kit. Discoverable profiles and structured inquiries help creators find and close brand deals without relying only on DMs.',
+  },
+  {
+    q: 'Will brands be able to discover me on Creasume?',
+    a: 'Yes. Public, verified dynamic media kits are discoverable by brands browsing for creators by niche, audience and campaign fit, giving you visibility beyond a private social feed.',
   },
 ]
 

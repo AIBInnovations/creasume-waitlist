@@ -64,7 +64,7 @@ export default function ContactUs() {
     <div className="relative min-h-screen flex flex-col overflow-x-clip bg-black text-white">
       <Seo
         title="Contact Creasume — Support & Partnerships"
-        description="Get in touch with the Creasume team. Questions about your creator card, plans, partnerships or support — reach us at core.creasume@gmail.com."
+        description="Get in touch with the Creasume team. Questions about dynamic media kits, creator plans, brand partnerships or support — reach us at core.creasume@gmail.com."
         path="/contact"
       />
       <div className="starfield" />

@@ -14,7 +14,7 @@ const SECTIONS = [
   {
     heading: '2. How We Use Your Information',
     paragraphs: [
-      'We use your information to provide and improve the Platform, create and display Influence Cards, calculate the Creasume Score, facilitate brand and creator interactions, process payments and subscriptions, and communicate with you about your account.',
+      'We use your information to provide and improve the Platform, create and display dynamic media kits, calculate the Creasume Score, facilitate brand and creator interactions, process payments and subscriptions, and communicate with you about your account.',
     ],
   },
   {

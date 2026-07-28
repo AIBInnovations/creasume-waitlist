@@ -89,6 +89,10 @@ function App() {
               url: 'https://creasume.com/',
               logo: 'https://creasume.com/creasumelogo.png',
               description: 'Creasume helps creators build verified dynamic media kits and connect with brands for paid collaborations.',
+              // schema.org property on Thing, made for exactly this: tells search
+              // engines Creasume is a distinct brand, not a misspelling of "resume".
+              disambiguatingDescription: 'Creasume is a creator media-kit platform. It is a distinct brand name and is not a resume, CV, or job-search tool.',
+              sameAs: ['https://instagram.com/creasume/'],
             },
             {
               '@type': 'WebSite',
@@ -233,7 +237,7 @@ function App() {
               <span className="gradient-text">Verified.</span>
             </motion.h1>
             <motion.p variants={fadeUp} className="text-white text-lg md:text-xl max-w-xl mb-16 md:mb-10 leading-snug relative z-10" style={{ fontFamily: "'Gelion', sans-serif" }}>
-              Create your dynamic media kit and turn your social presence into a professional creator identity that brands trust.
+              Create your dynamic media kit with Creasume and turn your social presence into a professional creator identity that brands trust.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:flex-nowrap gap-6 sm:gap-10 relative z-10">
               <motion.a

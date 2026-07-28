@@ -7,6 +7,7 @@ import { shortenLocation } from '../../services/influenceApi.js'
 import { billingUrl } from '../../services/dashboardApi.js'
 import { goToPath } from '../../router.js'
 import { RollUp } from '../../anim.jsx'
+import { deriveBadgeColors } from '../../utils/brandBadgeColors.js'
 
 // Value font size by text length — short numbers stay large; long text shrinks.
 const sizeForValue = (v) => {
@@ -669,9 +670,42 @@ export default function ProfileHero() {
               <h1 className="font-bold leading-none" style={{ fontFamily: FONT, fontSize: 'clamp(32px, 5vw, 52px)' }}>
                 {CREATOR.username}
               </h1>
-              {/* Founding Creator badge — gold-metal pill: glossy gold ring border
-                  around a dark interior, with a warm gold glow. */}
-              {CREATOR.isFoundingCreator && (
+              {/* Founding Creator / "Brought by <brand>" badge — a metal-ring pill:
+                  glossy ring border around a dark interior. Gold for Founding
+                  Creators; tinted to the brand's own color (auto-extracted from
+                  their logo) when a brand brought this creator onto Creasume —
+                  brand attribution takes priority over Founding when both are set. */}
+              {CREATOR.broughtByBrand ? (
+                (() => {
+                  const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
+                  return (
+                    <span
+                      className="founding-badge inline-flex items-center justify-center gap-1.5 rounded-full text-xs md:text-sm font-bold whitespace-nowrap order-first self-center lg:order-none lg:self-auto"
+                      style={{
+                        fontFamily: FONT,
+                        color: bc.text,
+                        padding: '7px 24px',
+                        background:
+                          'linear-gradient(180deg, #2a1d07 0%, #150e03 100%) padding-box, ' +
+                          `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
+                        border: '3px solid transparent',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                        letterSpacing: '0.02em',
+                      }}
+                      title={`Brought by ${CREATOR.broughtByBrand.name}`}
+                    >
+                      {CREATOR.broughtByBrand.logo && (
+                        <img
+                          src={CREATOR.broughtByBrand.logo}
+                          alt=""
+                          className="w-4 h-4 rounded-full object-contain"
+                        />
+                      )}
+                      Brought by {CREATOR.broughtByBrand.name}
+                    </span>
+                  )
+                })()
+              ) : CREATOR.isFoundingCreator && (
                 <span
                   className="founding-badge inline-flex items-center justify-center rounded-full text-xs md:text-sm font-bold whitespace-nowrap order-first self-center lg:order-none lg:self-auto"
                   style={{

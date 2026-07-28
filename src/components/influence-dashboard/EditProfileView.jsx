@@ -161,7 +161,7 @@ function DeviceScreen({ logicalWidth, src }) {
         <iframe
           src={src}
           id="creasume-preview-frame"
-          title="Influence card live preview"
+          title="Dynamic media kit live preview"
           className="device-preview-frame"
           style={{
             width: logicalWidth,
@@ -287,7 +287,7 @@ function ProfilePanel({ profile, setProfile, socials, setSocials, username, avat
 
           {/* NOTE — why we're asking for this */}
           <p className="mt-1 text-white/50 text-sm leading-relaxed" style={{ fontFamily: FONT }}>
-            This is the cover image brands see on your <strong className="text-white/75">Influence Card</strong> and on the
+            This is the cover image brands see on your <strong className="text-white/75">dynamic media kit</strong> and on the
             public <strong className="text-white/75">Browse Creators</strong> page — it&apos;s the first thing they notice, so
             make it count.
           </p>
@@ -872,7 +872,7 @@ function DesignPanel({ theme, setTheme }) {
   const accentBg = `linear-gradient(90deg, ${primary} 0%, ${secondary} 100%)`
   return (
     <section className="max-w-3xl mx-auto text-center">
-      <SectionHead title="Theme & Design" sub="Customize how your Influence Card looks." />
+      <SectionHead title="Theme & Design" sub="Customize how your dynamic media kit looks." />
 
       <Label>Accent Colour</Label>
       <div className="rounded-2xl h-16 grid place-items-center mb-5" style={{ background: accentBg }}>
@@ -1240,7 +1240,7 @@ export default function EditProfileView({ creator = {}, username = '', features 
         {/* ===== MOBILE (unchanged): row 1 = title + Preview; row 2 = tabs ===== */}
         <div className="md:hidden flex flex-col gap-3">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-wrap">
-            <h1 className="font-bold text-2xl sm:text-3xl whitespace-nowrap shrink-0" style={{ fontFamily: FONT }}>Edit Influence Card</h1>
+            <h1 className="font-bold text-2xl sm:text-3xl whitespace-nowrap shrink-0" style={{ fontFamily: FONT }}>Edit Dynamic Media Kit</h1>
             <a href={cardPath || '/'} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 ml-12 text-[13px] font-semibold text-[#11132f] transition-opacity hover:opacity-90 no-underline shrink-0" style={{ fontFamily: FONT, background: '#fff' }}>{I.eye} Preview</a>
           </div>
           <div className="flex items-center gap-3">
@@ -1260,7 +1260,7 @@ export default function EditProfileView({ creator = {}, username = '', features 
 
         {/* ===== DESKTOP (website): single row — title · tabs · toggle · Preview · Save ===== */}
         <div className="hidden md:flex items-center gap-4">
-          <h1 className="font-bold text-3xl whitespace-nowrap shrink-0" style={{ fontFamily: FONT }}>Edit Influence Card</h1>
+          <h1 className="font-bold text-3xl whitespace-nowrap shrink-0" style={{ fontFamily: FONT }}>Edit Dynamic Media Kit</h1>
           <nav ref={visRef(tabsRef)} className="flex items-center gap-1 min-w-0 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {TABS.map((t) => {
               const active = tab === t

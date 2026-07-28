@@ -34,6 +34,41 @@
     <meta name="twitter:title" content="Creasume — Verified Dynamic Media Kits for Creators" />
     <meta name="twitter:description" content="Build a verified dynamic media kit, showcase live creator insights and connect with brands for paid collaborations." />
     <meta name="twitter:image" content="https://creasume.com/og-image.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://creasume.com/#organization",
+            "name": "Creasume",
+            "url": "https://creasume.com/",
+            "logo": "https://creasume.com/creasumelogo.png",
+            "description": "Creasume helps creators build verified dynamic media kits and connect with brands for paid collaborations.",
+            "disambiguatingDescription": "Creasume is a creator media-kit platform. It is a distinct brand name and is not a resume, CV, or job-search tool.",
+            "sameAs": ["https://instagram.com/creasume/"]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://creasume.com/#website",
+            "name": "Creasume",
+            "url": "https://creasume.com/",
+            "publisher": { "@id": "https://creasume.com/#organization" },
+            "inLanguage": "en"
+          },
+          {
+            "@type": "SoftwareApplication",
+            "name": "Creasume",
+            "applicationCategory": "BusinessApplication",
+            "operatingSystem": "Web",
+            "url": "https://creasume.com/",
+            "description": "A creator platform for verified dynamic media kits, live social analytics, creator portfolios, pricing and brand deals.",
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+            "provider": { "@id": "https://creasume.com/#organization" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

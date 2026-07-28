@@ -18,7 +18,7 @@ import Seo from '../shared/Seo.jsx'
 import Testimonials from './Testimonials.jsx'
 import Pricing from './Pricing.jsx'
 import Application from './Application.jsx'
-import Faq from './Faq.jsx'
+import Faq, { FAQS_PLAIN } from './Faq.jsx'
 import '../App.css'
 
 // Reusable Creasume × Meta white pill (security/trust badge).
@@ -97,7 +97,7 @@ function RealBrandChip({ brand }) {
         <img
           src={brand.imageUrl}
           alt={brand.name}
-          className="w-12 h-12 rounded-full shrink-0 object-contain"
+          className="w-12 h-12 rounded-full shrink-0 object-cover"
           style={{ background: 'rgba(255,255,255,0.06)' }}
         />
       ) : (
@@ -174,11 +174,30 @@ export default function LandingPage() {
         path="/landing"
         jsonLd={{
           '@context': 'https://schema.org',
-          '@type': 'Organization',
-          name: 'Creasume',
-          url: 'https://creasume.com',
-          logo: 'https://creasume.com/creasumelogo.png',
-          description: 'Creasume helps creators build verified dynamic media kits with live social insights and connect with brands for paid collaborations.',
+          '@graph': [
+            {
+              '@type': 'Organization',
+              '@id': 'https://creasume.com/#organization',
+              name: 'Creasume',
+              url: 'https://creasume.com',
+              logo: 'https://creasume.com/creasumelogo.png',
+              description: 'Creasume helps creators build verified dynamic media kits with live social insights and connect with brands for paid collaborations.',
+              // Not "disambiguatingDescription" as a fuzzy hint — it's a real schema.org
+              // property on Thing, made for exactly this: telling search engines Creasume
+              // is a distinct brand, not a misspelling of "resume".
+              disambiguatingDescription: 'Creasume is a creator media-kit platform. It is a distinct brand name and is not a resume, CV, or job-search tool.',
+              sameAs: ['https://instagram.com/creasume/'],
+            },
+            {
+              '@type': 'FAQPage',
+              '@id': 'https://creasume.com/landing#faq',
+              mainEntity: FAQS_PLAIN.map(({ q, a }) => ({
+                '@type': 'Question',
+                name: q,
+                acceptedAnswer: { '@type': 'Answer', text: a },
+              })),
+            },
+          ],
         }}
       />
       {/* "Scroll down for more" hint on the hero (fades out once they scroll) */}
@@ -212,7 +231,7 @@ export default function LandingPage() {
         ]}
         cta={loggedIn
           ? { label: 'Go to Dashboard', href: dashHref }
-          : { label: 'Get Your Free Resume', href: '/signup' }}
+          : { label: 'Get Your Free Media Kit', href: '/signup' }}
         ctaVariant="gradient"
       />
 
@@ -275,7 +294,7 @@ export default function LandingPage() {
               Ditch the outdated PDFs.
             </motion.p>
             <motion.p variants={fadeUp} className="text-white/80 text-lg md:text-xl max-w-xl mb-12 md:mb-10 leading-snug relative z-10" style={{ fontFamily: "'Gelion', sans-serif" }}>
-              Turn your live social analytics into a dynamic professional identity in minutes.
+              Turn your live social analytics into a dynamic professional identity with Creasume in minutes.
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row sm:flex-nowrap gap-6 sm:gap-8 relative z-10">
               <motion.a

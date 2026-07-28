@@ -109,7 +109,7 @@ function SlideConnected() {
           Instagram Connected Successfully
         </h3>
         <p className="mt-1 text-[12.5px]" style={{ fontFamily: FONT, color: '#8a8a93' }}>
-          Your influence card is ready.
+          Your verified dynamic media kit is ready.
         </p>
       </div>
       {/* data-is-safe box, shown below the tick */}

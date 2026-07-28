@@ -148,7 +148,7 @@ export default function InfluenceInquiries({ username }) {
                   {lockedCount} brand {lockedCount === 1 ? 'inquiry is' : 'inquiries are'} waiting for you
                 </h2>
                 <p className="text-white/60 text-[15px] max-w-md mx-auto mb-7" style={{ fontFamily: FONT }}>
-                  {lockedCount === 1 ? 'A brand has' : 'Brands have'} reached out through your Influence Card.
+                  {lockedCount === 1 ? 'A brand has' : 'Brands have'} reached out through your dynamic media kit.
                   Upgrade to read {lockedCount === 1 ? 'it' : 'them'} and reply.
                 </p>
               </>
@@ -175,7 +175,7 @@ export default function InfluenceInquiries({ username }) {
           </div>
         ) : inquiries.length === 0 ? (
           <div className="rounded-2xl px-6 py-12 text-center text-white/45 text-[15px]" style={{ fontFamily: FONT, background: 'rgba(13,16,45,0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            No brand inquiries yet. Share your Influence Card to start receiving them.
+            No brand inquiries yet. Share your dynamic media kit to start receiving them.
           </div>
         ) : (
           <div className="flex flex-col gap-5">

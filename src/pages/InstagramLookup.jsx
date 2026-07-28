@@ -28,8 +28,8 @@ export default function InstagramLookup() {
 
         <div className="rounded-[28px] p-6 sm:p-10" style={{ background: 'rgba(20,21,35,.88)', border: '1px solid rgba(255,255,255,.11)', boxShadow: '0 28px 90px rgba(0,0,0,.45)' }}>
           <div className="h-12 w-12 rounded-2xl grid place-items-center mb-6 text-xl font-bold" style={{ background: 'linear-gradient(135deg,#7C5CFF,#E731A2)' }}>@</div>
-          <p className="uppercase tracking-[.2em] text-[11px] text-[#B7AEFF] font-semibold mb-3" style={{ fontFamily: FONT }}>Public influence card preview</p>
-          <h1 className="text-3xl sm:text-5xl font-semibold leading-tight mb-4" style={{ fontFamily: FONT }}>Turn any Instagram username into an Influence Card.</h1>
+          <p className="uppercase tracking-[.2em] text-[11px] text-[#B7AEFF] font-semibold mb-3" style={{ fontFamily: FONT }}>Dynamic media kit preview</p>
+          <h1 className="text-3xl sm:text-5xl font-semibold leading-tight mb-4" style={{ fontFamily: FONT }}>Turn any Instagram username into a verified dynamic media kit.</h1>
           <p className="text-white/58 text-[15px] sm:text-base max-w-xl mb-8" style={{ fontFamily: FONT }}>
             We’ll use publicly available Instagram information. Metrics Instagram does not expose publicly are filled with clearly identified sample data for the preview.
           </p>
@@ -52,7 +52,7 @@ export default function InstagramLookup() {
                 />
               </div>
               <button type="submit" className="rounded-xl px-6 py-3.5 font-semibold text-sm text-white hover:brightness-110 transition" style={{ fontFamily: FONT, background: 'linear-gradient(90deg,#6F63DE,#C04DCC)' }}>
-                Create Influence Card
+                Create Media Kit
               </button>
             </div>
             {error && <p role="alert" className="text-[#FF8A9B] text-sm mt-3" style={{ fontFamily: FONT }}>{error}</p>}

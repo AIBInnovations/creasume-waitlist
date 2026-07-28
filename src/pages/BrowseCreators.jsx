@@ -158,7 +158,7 @@ export default function BrowseCreators() {
       <section className="relative z-10 px-6 sm:px-12 md:px-20 pt-6 md:pt-10 pb-6 text-center">
         <h1 className="font-bold leading-tight" style={{ fontFamily: FONT, fontSize: 'clamp(36px, 6vw, 60px)' }}>Discover Top Creators</h1>
         <p className="mt-4 text-white/55 mx-auto max-w-2xl text-[15px] md:text-[18px] leading-relaxed" style={{ fontFamily: FONT }}>
-          Browse verified influence cards, compare transparent pricing, and connect directly with creators for your next campaign.
+          Browse verified dynamic media kits, compare transparent pricing, and connect directly with creators for your next campaign.
         </p>
       </section>
 

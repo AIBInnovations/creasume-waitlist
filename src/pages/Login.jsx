@@ -24,11 +24,17 @@ const FONT = "'Outfit', sans-serif"
 const STEPS = [
   { n: 1, label: 'Sign Up your Account' },
   { n: 2, label: 'Log In your Account' },
-  { n: 3, label: 'Create your Influence Card' },
+  { n: 3, label: 'Create your dynamic media kit' },
 ]
 
 export default function Login() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', remember: false })
+  // Defaults to true so email/password login persists via localStorage like every
+  // other sign-in path (signup, Google, phone) already does — an unchecked box
+  // meant sessionStorage, which mobile browsers purge far more aggressively than
+  // desktop (backgrounded-tab reclaim, reopening via a home-screen bookmark), so
+  // the same "forgot to check the box" mistake looked fine on web but logged
+  // mobile users out constantly.
+  const [form, setForm] = useState({ name: '', email: '', password: '', remember: true })
   const [show, setShow] = useState(false)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')

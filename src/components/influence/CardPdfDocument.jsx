@@ -39,6 +39,15 @@ const LABEL = '#9B7BF0' // solid stand-in for the card's gradient label text
 const CYAN = '#5EEAD4'
 const GOLD = '#E8C55F'
 
+// Solid-color badge tint helper — used for the "Brought by <brand>" pill so
+// its color matches the brand's auto-extracted logo color instead of gold.
+function hexToRgba(hex, alpha) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '')
+  if (!m) return `rgba(232,197,95,${alpha})`
+  const [r, g, b] = [m[1], m[2], m[3]].map((h) => parseInt(h, 16))
+  return `rgba(${r},${g},${b},${alpha})`
+}
+
 const tileBox = { backgroundColor: TILE, border: `1px solid ${LINE}`, borderRadius: 16 }
 
 // ---- Brand logos for the Professional Presence rows, matched by platform name.
@@ -252,7 +261,15 @@ export default function CardPdfDocument({ data, cardUrl }) {
           <h1 style={{ margin: 0, fontSize: 40, fontWeight: 700, lineHeight: 1.05 }}>
             {CREATOR.username || CREATOR.name}
           </h1>
-          {CREATOR.isFoundingCreator && (
+          {CREATOR.broughtByBrand ? (
+            <span style={{
+              padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+              color: CREATOR.broughtByBrand.color || GOLD,
+              background: hexToRgba(CREATOR.broughtByBrand.color || GOLD, 0.10),
+              border: `1px solid ${CREATOR.broughtByBrand.color || GOLD}`,
+              whiteSpace: 'nowrap',
+            }}>Brought by {CREATOR.broughtByBrand.name}</span>
+          ) : CREATOR.isFoundingCreator && (
             <span style={{
               padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
               color: GOLD, background: 'rgba(232,197,95,0.10)', border: `1px solid ${GOLD}`,

@@ -43,7 +43,7 @@ function ConnectScreen({ onConnect }) {
         Connect Instagram
       </h3>
       <p className="text-white/55 text-[15px] mb-7 text-center">
-        Generate your live influence card in seconds.
+        Generate your verified dynamic media kit in seconds.
       </p>
       <button
         onClick={onConnect}

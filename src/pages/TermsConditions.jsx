@@ -10,7 +10,7 @@ const SECTIONS = [
   {
     heading: '2. The Service',
     paragraphs: [
-      'Creasume is a creator intelligence and deal facilitation platform that helps creators present their profiles as Influence Cards, provides a Creasume Score, and enables structured interactions between creators and brands. We may add, modify, or discontinue features at any time.',
+      'Creasume is a creator intelligence and deal facilitation platform that helps creators present verified dynamic media kits, provides a Creasume Score, and enables structured interactions between creators and brands. We may add, modify, or discontinue features at any time.',
     ],
   },
   {

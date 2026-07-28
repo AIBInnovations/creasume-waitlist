@@ -41,7 +41,9 @@ import {
   cancelSubscription,
   downgradePlan,
   validateReferralCode,
+  API_BASE,
 } from '../../services/dashboardApi.js'
+import { deriveBadgeColors } from '../../utils/brandBadgeColors.js'
 
 const NAV = [
   { key: 'dashboard', label: 'Dashboard', icon: 'grid' },
@@ -161,7 +163,7 @@ function StatCard({ value, label, sub, icon, small, on, onToggle }) {
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px]" style={{ fontFamily: MONO, ...LABEL_GRADIENT }}>{sub}</span>
         {onToggle && (
-          <MiniToggle on={on} onChange={onToggle} title={on ? 'Showing on Influence Card — tap to hide' : 'Hidden from Influence Card — tap to show'} />
+          <MiniToggle on={on} onChange={onToggle} title={on ? 'Showing on your dynamic media kit — tap to hide' : 'Hidden from your dynamic media kit — tap to show'} />
         )}
       </div>
     </div>
@@ -524,7 +526,7 @@ function PlatformsPanel({ creator }) {
   ]
   return (
     <div>
-      <SHead title="Connected Platforms" subtitle="Connect your social accounts to automatically sync your latest stats and content to your Influence Card." />
+      <SHead title="Connected Platforms" subtitle="Connect your social accounts to automatically sync your latest stats and content to your dynamic media kit." />
       <div className="flex flex-col gap-3">
         {rows.map((p) => (
           <div key={p.key} className="flex items-center justify-between rounded-2xl px-4 py-3.5" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
@@ -1423,6 +1425,17 @@ export default function InfluenceDashboard({ username }) {
   // always verified.
   const isFounding = !!creator.isFoundingCreator
   const isVerified = !!(creator.isVerified || creator.isFoundingCreator)
+  // Brand attribution takes priority over the Founding badge (same rule as the
+  // public card in ProfileHero.jsx) — tinted with the brand's auto-extracted color.
+  const broughtByBrand = creator.broughtByBrand?.name
+    ? {
+        name: creator.broughtByBrand.name,
+        color: creator.broughtByBrand.color || null,
+        logo: creator.broughtByBrand.hasLogo && creator.publicId
+          ? `${API_BASE}/public/brand-logo/${encodeURIComponent(creator.publicId)}`
+          : '',
+      }
+    : null
   // Public share link: /<username>/<publicId> — the @username is visible (nice,
   // branded), but the card is resolved by the opaque publicId (the LAST segment),
   // so it can't be opened by guessing the username. `cardPath` is URL-encoded for
@@ -1748,8 +1761,30 @@ export default function InfluenceDashboard({ username }) {
                     </svg>
                   </span>
                 )}
-                {/* Founding Creator — gold pill (admin-managed). */}
-                {isFounding && (
+                {/* Brand attribution / Founding Creator pill (admin-managed).
+                    Brand attribution wins when both are set — gold otherwise. */}
+                {broughtByBrand ? (
+                  (() => {
+                    const bc = deriveBadgeColors(broughtByBrand.color)
+                    return (
+                      <span
+                        title={`Brought by ${broughtByBrand.name}`}
+                        className="founding-badge inline-flex shrink-0 items-center gap-1 rounded-full text-[10.5px] font-bold whitespace-nowrap px-2 py-0.5"
+                        style={{
+                          fontFamily: FONT,
+                          color: bc.text,
+                          background: 'rgba(0,0,0,0.35)',
+                          border: `1px solid ${bc.ringMid}99`,
+                        }}
+                      >
+                        {broughtByBrand.logo && (
+                          <img src={broughtByBrand.logo} alt="" className="w-3 h-3 rounded-full object-contain" />
+                        )}
+                        Brought by {broughtByBrand.name}
+                      </span>
+                    )
+                  })()
+                ) : isFounding && (
                   <span
                     title="Founding Creator"
                     className="founding-badge inline-flex shrink-0 items-center rounded-full text-[10.5px] font-bold whitespace-nowrap px-2 py-0.5"
@@ -1861,10 +1896,10 @@ export default function InfluenceDashboard({ username }) {
               </div>
             )}
 
-            {/* Influence card link */}
+            {/* Dynamic media kit link */}
             <div className="rounded-2xl px-7 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style={PANEL}>
               <div>
-                <div className="text-white font-semibold text-xl mb-1.5" style={{ fontFamily: FONT }}>Your Influence Card Link</div>
+                <div className="text-white font-semibold text-xl mb-1.5" style={{ fontFamily: FONT }}>Your Dynamic Media Kit Link</div>
                 <div className="text-white/55 text-base" style={{ fontFamily: FONT }}>Share this with brands instead of a PDF media kit.</div>
               </div>
               <CardLinkPill ref={cardLinkRef} display={cardDisplay} copyUrl={cardUrl} />

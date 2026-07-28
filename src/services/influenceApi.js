@@ -37,10 +37,14 @@ export async function fetchLandingContent() {
       if (!username) return null
 
       try {
+        // Bounded so one slow/cold-starting lookup can't hold up the whole
+        // section — falls back to the saved admin record past this timeout.
+        const controller = new AbortController()
+        const timeout = setTimeout(() => controller.abort(), 4000)
         const lookupRes = await fetch(
           `${API_BASE}/public/lookup/${encodeURIComponent(username)}`,
-          { cache: 'no-store' },
-        )
+          { cache: 'no-store', signal: controller.signal },
+        ).finally(() => clearTimeout(timeout))
         const lookup = await lookupRes.json().catch(() => ({}))
         const profile = lookup?.success && lookup.data ? lookup.data : {}
         const followers = Number(profile.followers || 0)
@@ -564,6 +568,19 @@ export function mapInfluenceData(api, d) {
     // Admin-managed badges. A Founding Creator is always verified.
     isFoundingCreator: !!c.isFoundingCreator,
     verified: !!(c.isVerified || c.isFoundingCreator),
+    // Brand attribution — when an admin has set this, ProfileHero/dashboard/PDF
+    // show a "Brought by <name>" badge tinted with `color` (auto-extracted from
+    // the brand's logo) INSTEAD OF the Founding badge, even if isFoundingCreator
+    // is also true.
+    broughtByBrand: c.broughtByBrand?.name
+      ? {
+          name: c.broughtByBrand.name,
+          color: c.broughtByBrand.color || null,
+          logo: c.broughtByBrand.hasLogo && c.publicId
+            ? `${API_BASE}/public/brand-logo/${encodeURIComponent(c.publicId)}`
+            : '',
+        }
+      : null,
     // Load the avatar through our backend proxy (the raw Instagram CDN URL is
     // hotlink-blocked and expires); ProfileHero falls back to the initial if
     // even the proxy can't serve it. Keyed by the opaque publicId (falling back
