@@ -271,19 +271,24 @@ export default function CardPdfDocument({ data, cardUrl }) {
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <span style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '5px 16px 5px 5px', borderRadius: 999, fontSize: 12, fontWeight: 700,
                   color: bc.ringLight,
                   background: hexToRgba(bc.ringMid, 0.16),
                   border: `1px solid ${bc.ringMid}`,
                   whiteSpace: 'nowrap',
                 }}>
                   {CREATOR.broughtByBrand.logo && (
-                    <img
-                      src={CREATOR.broughtByBrand.logo}
-                      alt=""
-                      style={{ width: 14, height: 14, borderRadius: '50%', objectFit: 'contain' }}
-                    />
+                    <span style={{
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      width: 22, height: 22, borderRadius: '50%', overflow: 'hidden', background: '#fff',
+                    }}>
+                      <img
+                        src={CREATOR.broughtByBrand.logo}
+                        alt=""
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 3 }}
+                      />
+                    </span>
                   )}
                   {CREATOR.broughtByBrand.name}
                 </span>

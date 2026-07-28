@@ -1773,7 +1773,7 @@ export default function InfluenceDashboard({ username }) {
                       <div className="flex flex-col items-start gap-0.5">
                         <span
                           title={`Managed by ${broughtByBrand.name}`}
-                          className="founding-badge inline-flex shrink-0 items-center gap-1 rounded-full text-[10.5px] font-bold whitespace-nowrap px-2 py-0.5"
+                          className="founding-badge inline-flex shrink-0 items-center gap-1.5 rounded-full text-[10.5px] font-bold whitespace-nowrap pl-1 pr-2.5 py-1"
                           style={{
                             fontFamily: FONT,
                             color: bc.text,
@@ -1782,7 +1782,12 @@ export default function InfluenceDashboard({ username }) {
                           }}
                         >
                           {broughtByBrand.logo && (
-                            <img src={broughtByBrand.logo} alt="" className="w-3 h-3 rounded-full object-contain" />
+                            <span
+                              className="inline-flex items-center justify-center rounded-full overflow-hidden shrink-0"
+                              style={{ width: 18, height: 18, background: '#fff' }}
+                            >
+                              <img src={broughtByBrand.logo} alt="" className="w-full h-full object-contain" style={{ padding: 2 }} />
+                            </span>
                           )}
                           {broughtByBrand.name}
                         </span>

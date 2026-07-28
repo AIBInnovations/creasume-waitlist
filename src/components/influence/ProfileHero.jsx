@@ -685,7 +685,7 @@ export default function ProfileHero() {
                         style={{
                           fontFamily: FONT,
                           color: bc.text,
-                          padding: '7px 24px',
+                          padding: '6px 24px 6px 8px',
                           background:
                             `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +
                             `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
@@ -696,11 +696,17 @@ export default function ProfileHero() {
                         title={`Managed by ${CREATOR.broughtByBrand.name}`}
                       >
                         {CREATOR.broughtByBrand.logo && (
-                          <img
-                            src={CREATOR.broughtByBrand.logo}
-                            alt=""
-                            className="w-4 h-4 rounded-full object-contain"
-                          />
+                          <span
+                            className="inline-flex items-center justify-center rounded-full overflow-hidden shrink-0"
+                            style={{ width: 28, height: 28, background: '#fff' }}
+                          >
+                            <img
+                              src={CREATOR.broughtByBrand.logo}
+                              alt=""
+                              className="w-full h-full object-contain"
+                              style={{ padding: 3 }}
+                            />
+                          </span>
                         )}
                         {CREATOR.broughtByBrand.name}
                       </span>
