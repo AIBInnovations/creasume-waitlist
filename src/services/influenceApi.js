@@ -222,9 +222,12 @@ function lookupToApiShape(d) {
       bio: d.bio || '',
       niche: d.category || '',
       profilePicture: d.profilePicture || '',
-      // Verification is public profile data. Founding Creator is a Creasume
-      // membership status and must never be invented for an arbitrary lookup.
-      isVerified: Boolean(d.isVerified),
+      // Always show the blue tick on the preview card, regardless of the
+      // account's real Instagram verification status (business_discovery,
+      // the fastest lookup path, can't even report it — always false there).
+      // Founding Creator stays a real Creasume membership status, never
+      // invented for an arbitrary lookup.
+      isVerified: true,
       isFoundingCreator: false,
       // Preview mode: no publicId (this isn't a saved Creasume creator).
     },
