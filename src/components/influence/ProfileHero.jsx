@@ -679,30 +679,38 @@ export default function ProfileHero() {
                 (() => {
                   const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
                   return (
-                    <span
-                      className="founding-badge inline-flex items-center justify-center gap-1.5 rounded-full text-xs md:text-sm font-bold whitespace-nowrap order-first self-center lg:order-none lg:self-auto"
-                      style={{
-                        fontFamily: FONT,
-                        color: bc.text,
-                        padding: '7px 24px',
-                        background:
-                          `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +
-                          `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
-                        border: '3px solid transparent',
-                        textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-                        letterSpacing: '0.02em',
-                      }}
-                      title={`Managed by ${CREATOR.broughtByBrand.name}`}
-                    >
-                      {CREATOR.broughtByBrand.logo && (
-                        <img
-                          src={CREATOR.broughtByBrand.logo}
-                          alt=""
-                          className="w-4 h-4 rounded-full object-contain"
-                        />
-                      )}
-                      Managed by {CREATOR.broughtByBrand.name}
-                    </span>
+                    <div className="flex flex-col items-center gap-1 order-first self-center lg:order-none lg:self-auto">
+                      <span
+                        className="founding-badge inline-flex items-center justify-center gap-1.5 rounded-full text-xs md:text-sm font-bold whitespace-nowrap"
+                        style={{
+                          fontFamily: FONT,
+                          color: bc.text,
+                          padding: '7px 24px',
+                          background:
+                            `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +
+                            `linear-gradient(160deg, ${bc.ringLight} 0%, ${bc.ringMid} 46%, ${bc.ringDark} 100%) border-box`,
+                          border: '3px solid transparent',
+                          textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                          letterSpacing: '0.02em',
+                        }}
+                        title={`Managed by ${CREATOR.broughtByBrand.name}`}
+                      >
+                        {CREATOR.broughtByBrand.logo && (
+                          <img
+                            src={CREATOR.broughtByBrand.logo}
+                            alt=""
+                            className="w-4 h-4 rounded-full object-contain"
+                          />
+                        )}
+                        {CREATOR.broughtByBrand.name}
+                      </span>
+                      <span
+                        className="text-[10px] md:text-xs font-medium"
+                        style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.03em' }}
+                      >
+                        Managed by
+                      </span>
+                    </div>
                   )
                 })()
               ) : CREATOR.isFoundingCreator && (

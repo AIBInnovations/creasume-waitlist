@@ -269,13 +269,26 @@ export default function CardPdfDocument({ data, cardUrl }) {
             // color, which is often too dark/light to read against the dark PDF.
             const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
             return (
-              <span style={{
-                padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
-                color: bc.ringLight,
-                background: hexToRgba(bc.ringMid, 0.16),
-                border: `1px solid ${bc.ringMid}`,
-                whiteSpace: 'nowrap',
-              }}>Managed by {CREATOR.broughtByBrand.name}</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                  color: bc.ringLight,
+                  background: hexToRgba(bc.ringMid, 0.16),
+                  border: `1px solid ${bc.ringMid}`,
+                  whiteSpace: 'nowrap',
+                }}>
+                  {CREATOR.broughtByBrand.logo && (
+                    <img
+                      src={CREATOR.broughtByBrand.logo}
+                      alt=""
+                      style={{ width: 14, height: 14, borderRadius: '50%', objectFit: 'contain' }}
+                    />
+                  )}
+                  {CREATOR.broughtByBrand.name}
+                </span>
+                <span style={{ fontSize: 10, fontWeight: 500, color: MUTED }}>Managed by</span>
+              </div>
             )
           })() : CREATOR.isFoundingCreator && (
             <span style={{

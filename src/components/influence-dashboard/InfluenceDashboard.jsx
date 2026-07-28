@@ -1770,21 +1770,26 @@ export default function InfluenceDashboard({ username }) {
                   (() => {
                     const bc = deriveBadgeColors(broughtByBrand.color)
                     return (
-                      <span
-                        title={`Managed by ${broughtByBrand.name}`}
-                        className="founding-badge inline-flex shrink-0 items-center gap-1 rounded-full text-[10.5px] font-bold whitespace-nowrap px-2 py-0.5"
-                        style={{
-                          fontFamily: FONT,
-                          color: bc.text,
-                          background: hexToRgba(bc.ringMid, 0.18),
-                          border: `1px solid ${bc.ringMid}99`,
-                        }}
-                      >
-                        {broughtByBrand.logo && (
-                          <img src={broughtByBrand.logo} alt="" className="w-3 h-3 rounded-full object-contain" />
-                        )}
-                        Managed by {broughtByBrand.name}
-                      </span>
+                      <div className="flex flex-col items-start gap-0.5">
+                        <span
+                          title={`Managed by ${broughtByBrand.name}`}
+                          className="founding-badge inline-flex shrink-0 items-center gap-1 rounded-full text-[10.5px] font-bold whitespace-nowrap px-2 py-0.5"
+                          style={{
+                            fontFamily: FONT,
+                            color: bc.text,
+                            background: hexToRgba(bc.ringMid, 0.18),
+                            border: `1px solid ${bc.ringMid}99`,
+                          }}
+                        >
+                          {broughtByBrand.logo && (
+                            <img src={broughtByBrand.logo} alt="" className="w-3 h-3 rounded-full object-contain" />
+                          )}
+                          {broughtByBrand.name}
+                        </span>
+                        <span className="text-[9px] font-medium" style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.4)' }}>
+                          Managed by
+                        </span>
+                      </div>
                     )
                   })()
                 ) : isFounding && (
