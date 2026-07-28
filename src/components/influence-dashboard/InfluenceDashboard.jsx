@@ -1777,6 +1777,9 @@ export default function InfluenceDashboard({ username }) {
                           style={{
                             fontFamily: FONT,
                             color: bc.text,
+                            // Match the Founding pill's own footprint so a short
+                            // brand name doesn't render smaller than it.
+                            minWidth: 100,
                             background: hexToRgba(bc.ringMid, 0.18),
                             border: `1px solid ${bc.ringMid}99`,
                           }}

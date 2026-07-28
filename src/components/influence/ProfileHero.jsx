@@ -685,6 +685,10 @@ export default function ProfileHero() {
                         style={{
                           fontFamily: FONT,
                           color: bc.text,
+                          // Never shrink below the Founding badge's own footprint,
+                          // so a short brand name (e.g. "ugc") doesn't look tiny
+                          // next to it.
+                          minWidth: 190,
                           padding: '6px 24px 6px 8px',
                           background:
                             `linear-gradient(180deg, ${bc.fillTop} 0%, ${bc.fillBottom} 100%) padding-box, ` +

@@ -271,7 +271,10 @@ export default function CardPdfDocument({ data, cardUrl }) {
             return (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
                 <span style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                  // Match the Founding pill's own footprint so a short brand
+                  // name doesn't render smaller than it.
+                  minWidth: 130,
                   padding: '5px 16px 5px 5px', borderRadius: 999, fontSize: 12, fontWeight: 700,
                   color: bc.ringLight,
                   background: hexToRgba(bc.ringMid, 0.16),
