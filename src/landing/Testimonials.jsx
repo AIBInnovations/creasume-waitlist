@@ -3,7 +3,9 @@ import { formatCount } from '../services/influenceApi.js'
 import { goToPath } from '../router.js'
 
 const PLACEHOLDERS = Array.from({ length: 6 })
-const MARQUEE_MIN = 5
+// Below this many real creators there isn't enough content to loop — show a
+// static row instead of an auto-scrolling marquee.
+const MARQUEE_MIN = 2
 
 function FoundingCheck({ className = '' }) {
   return (
@@ -23,18 +25,31 @@ function FoundingCheck({ className = '' }) {
 
 function CreatorPlaceholder() {
   return (
-    <div className="shrink-0 w-63 md:w-72 h-105 md:h-120 rounded-3xl mx-3 overflow-hidden border border-white/8 bg-white/5 animate-pulse">
+    <div className="shrink-0 w-52 md:w-72 h-96 md:h-120 rounded-3xl mx-3 overflow-hidden border border-white/8 bg-white/5 animate-pulse">
       <div className="h-full bg-linear-to-b from-white/4 to-white/10" />
     </div>
   )
 }
 
-function CreatorCard({ creator }) {
+function CreatorCard({ creator, layout = 'marquee' }) {
   const username = creator.username || String(creator.handle || '').replace(/^@+/, '')
   const name = creator.name || username
   const score = Number.isFinite(Number(creator.score)) ? Math.round(Number(creator.score)) : null
   const followers = formatCount(creator.followers)
-  const href = `/${encodeURIComponent(username)}`
+  // The real card lives at /<username>/<publicId> — a bare /<username> has no
+  // id and the backend treats that as private (see resolveUsername() in
+  // influenceApi.js). Fall back to the live on-the-fly preview when a creator
+  // has no linked account/publicId yet.
+  const href = creator.publicId
+    ? `/${encodeURIComponent(username)}/${encodeURIComponent(creator.publicId)}`
+    : `/preview?lookup=${encodeURIComponent(username)}`
+
+  // Marquee cards need a fixed width + side margin (they sit in a horizontally
+  // scrolling track). Grid cards (the 1-2 creator static layout) instead fill
+  // their grid cell — a fixed width would force 2 cards wider than the phone
+  // screen and push them onto separate rows instead of sitting side by side.
+  const sizeClass =
+    layout === 'grid' ? 'w-full h-88 md:h-120' : 'w-52 md:w-72 h-96 md:h-120 mx-3'
 
   return (
     <a
@@ -44,7 +59,7 @@ function CreatorCard({ creator }) {
         goToPath(href)
       }}
       aria-label={`Open ${name}'s dynamic media kit`}
-      className="group relative shrink-0 w-63 md:w-72 h-105 md:h-120 rounded-3xl mx-3 overflow-hidden border border-white/12 bg-[#12131a] text-white no-underline shadow-[0_18px_50px_rgba(0,0,0,.35)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8d96ff]"
+      className={`group relative shrink-0 ${sizeClass} rounded-3xl overflow-hidden border border-white/12 bg-[#12131a] text-white no-underline shadow-[0_18px_50px_rgba(0,0,0,.35)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#8d96ff]`}
     >
       {creator.profilePicture ? (
         <img
@@ -93,24 +108,24 @@ function CreatorCard({ creator }) {
         </div>
       )}
 
-      <div className="absolute inset-x-0 bottom-0 p-5">
+      <div className="absolute inset-x-0 bottom-0 p-4 md:p-5">
         <div className="flex min-w-0 items-center gap-1.5">
-          <p className="truncate text-xl font-bold">{name}</p>
+          <p className="truncate text-lg md:text-xl font-bold">{name}</p>
           {creator.isFoundingCreator && (
-            <FoundingCheck className="h-5 w-5 shrink-0 drop-shadow-[0_1px_3px_rgba(0,0,0,.45)]" />
+            <FoundingCheck className="h-4 w-4 md:h-5 md:w-5 shrink-0 drop-shadow-[0_1px_3px_rgba(0,0,0,.45)]" />
           )}
         </div>
-        <div className="mt-1 flex items-center gap-2 text-sm text-white/80">
+        <div className="mt-1 flex flex-col md:flex-row md:items-center gap-x-2 text-xs md:text-sm text-white/80">
           <span className="truncate">@{username}</span>
           {followers && (
             <>
-              <span aria-hidden="true">•</span>
-              <span className="shrink-0">{followers} followers</span>
+              <span aria-hidden="true" className="hidden md:inline">•</span>
+              <span className="truncate">{followers} followers</span>
             </>
           )}
         </div>
         {creator.quote && (
-          <p className="mt-2 text-xs leading-snug italic text-white/70">"{creator.quote}"</p>
+          <p className="mt-2 text-[11px] md:text-xs leading-snug italic text-white/70">"{creator.quote}"</p>
         )}
       </div>
     </a>
@@ -120,6 +135,9 @@ function CreatorCard({ creator }) {
 export default function Testimonials({ items = [] }) {
   const hasCreators = items.length > 0
   const cards = hasCreators ? items : PLACEHOLDERS
+  // Placeholders always loop (there are 6, plenty to scroll). Real creators
+  // only loop once there are enough to make a scroll feel continuous —
+  // otherwise a static row reads better than a slow 2-card loop.
   const useMarquee = !hasCreators || items.length >= MARQUEE_MIN
 
   const row = (hidden) => (
@@ -153,7 +171,7 @@ export default function Testimonials({ items = [] }) {
             maskImage: 'linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent)',
           }}
         >
-          <div className="lp-marquee" style={{ animationDuration: '44s' }}>
+          <div className="lp-marquee" style={{ animationDuration: '24s' }}>
             {row(undefined)}
             {row(true)}
           </div>
@@ -164,10 +182,10 @@ export default function Testimonials({ items = [] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="flex flex-wrap justify-center gap-y-6 px-6"
+          className={`grid ${items.length >= 2 ? 'grid-cols-2' : 'grid-cols-1'} gap-1 md:gap-6 justify-items-stretch max-w-md md:max-w-3xl mx-auto px-1`}
         >
           {items.map((creator, index) => (
-            <CreatorCard key={creator._id || creator.username || index} creator={creator} />
+            <CreatorCard key={creator._id || creator.username || index} creator={creator} layout="grid" />
           ))}
         </motion.div>
       )}

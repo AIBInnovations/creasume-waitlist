@@ -43,7 +43,7 @@ import {
   validateReferralCode,
   API_BASE,
 } from '../../services/dashboardApi.js'
-import { deriveBadgeColors } from '../../utils/brandBadgeColors.js'
+import { deriveBadgeColors, hexToRgba } from '../../utils/brandBadgeColors.js'
 
 const NAV = [
   { key: 'dashboard', label: 'Dashboard', icon: 'grid' },
@@ -1431,8 +1431,11 @@ export default function InfluenceDashboard({ username }) {
     ? {
         name: creator.broughtByBrand.name,
         color: creator.broughtByBrand.color || null,
+        // `?v=updatedAt` busts the browser cache on this fixed (1hr
+        // Cache-Control) URL — `updatedAt` changes on every save, unlike
+        // `color`, which two different logos can coincidentally share.
         logo: creator.broughtByBrand.hasLogo && creator.publicId
-          ? `${API_BASE}/public/brand-logo/${encodeURIComponent(creator.publicId)}`
+          ? `${API_BASE}/public/brand-logo/${encodeURIComponent(creator.publicId)}?v=${encodeURIComponent(creator.updatedAt || '')}`
           : '',
       }
     : null
@@ -1773,7 +1776,7 @@ export default function InfluenceDashboard({ username }) {
                         style={{
                           fontFamily: FONT,
                           color: bc.text,
-                          background: 'rgba(0,0,0,0.35)',
+                          background: hexToRgba(bc.ringMid, 0.18),
                           border: `1px solid ${bc.ringMid}99`,
                         }}
                       >

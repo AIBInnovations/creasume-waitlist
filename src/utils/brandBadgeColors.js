@@ -5,6 +5,11 @@
 // color is available (e.g. color extraction failed on the uploaded logo).
 
 const GOLD = { ringLight: '#FBE7A0', ringMid: '#D8A93C', ringDark: '#9A701F', text: '#F6E3A8' }
+// Neutral "platinum" ring for logos with no real hue (black/white/gray marks —
+// e.g. Puma, Nike). Forcing a fake hue onto an achromatic color is what used
+// to turn these into an unintended salmon/brown tint (hue defaults to 0° when
+// r=g=b, and boosting saturation at hue 0 is red).
+const SILVER = { ringLight: '#F1F3F5', ringMid: '#ADB5BD', ringDark: '#495057', text: '#F1F3F5' }
 
 function hexToHsl(hex) {
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex || '').trim())
@@ -41,11 +46,22 @@ function hslToHex(h, s, l) {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`
 }
 
+/** @param {string} hex, @param {number} alpha 0-1 — e.g. "#3B82F6", 0.16 */
+export function hexToRgba(hex, alpha) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex || '').trim())
+  if (!m) return `rgba(216,169,60,${alpha})` // fallback: gold ringMid
+  const [r, g, b] = [m[1], m[2], m[3]].map((h) => parseInt(h, 16))
+  return `rgba(${r},${g},${b},${alpha})`
+}
+
 /** @param {string} hex e.g. "#3B82F6" — the brand's auto-extracted color. */
 export function deriveBadgeColors(hex) {
   const hsl = hexToHsl(hex)
   if (!hsl) return GOLD
   const { h } = hsl
+  // Genuinely achromatic source (black/white/gray logo) — there's no real hue
+  // to work with, so render a neutral metal ring instead of fabricating one.
+  if (hsl.s < 0.08) return SILVER
   // Keep saturation reasonably rich regardless of the source logo's own
   // saturation, so a pale/washed-out logo color still reads as a metal ring.
   const sat = Math.max(0.45, Math.min(0.85, hsl.s))

@@ -576,8 +576,13 @@ export function mapInfluenceData(api, d) {
       ? {
           name: c.broughtByBrand.name,
           color: c.broughtByBrand.color || null,
+          // `?v=updatedAt` busts the browser cache on this fixed URL (served
+          // with a 1hr Cache-Control) so a re-uploaded logo doesn't keep
+          // showing the stale cached image. Uses `updatedAt` (changes on every
+          // save) rather than `color`, since two different logos can
+          // coincidentally extract the same color and leave the URL unchanged.
           logo: c.broughtByBrand.hasLogo && c.publicId
-            ? `${API_BASE}/public/brand-logo/${encodeURIComponent(c.publicId)}`
+            ? `${API_BASE}/public/brand-logo/${encodeURIComponent(c.publicId)}?v=${encodeURIComponent(c.updatedAt || '')}`
             : '',
         }
       : null,

@@ -702,8 +702,16 @@ body::-webkit-scrollbar {
   width: max-content;
   animation: lp-scroll linear infinite;
 }
-.lp-marquee-group:hover .lp-marquee {
-  animation-play-state: paused;
+/* Only pause-on-hover for devices that actually support hover. On touch
+   devices, tapping a card (an <a>) leaves the :hover state "stuck" (iOS
+   Safari and most mobile browsers apply :hover on tap and don't clear it
+   until something else is tapped) — without this guard, the very first tap
+   freezes the marquee for good, which is why auto-scroll looked broken on
+   mobile even though the animation itself was fine. */
+@media (hover: hover) and (pointer: fine) {
+  .lp-marquee-group:hover .lp-marquee {
+    animation-play-state: paused;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .lp-marquee { animation: none; }

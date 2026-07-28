@@ -24,6 +24,8 @@
 // Mounted OFF-SCREEN, captured, then unmounted. A4 width (794px @96dpi).
 // ============================================================================
 
+import { deriveBadgeColors } from '../../utils/brandBadgeColors.js'
+
 const FONT = "'Outfit', sans-serif"
 const MONO = "ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace"
 
@@ -261,15 +263,21 @@ export default function CardPdfDocument({ data, cardUrl }) {
           <h1 style={{ margin: 0, fontSize: 40, fontWeight: 700, lineHeight: 1.05 }}>
             {CREATOR.username || CREATOR.name}
           </h1>
-          {CREATOR.broughtByBrand ? (
-            <span style={{
-              padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
-              color: CREATOR.broughtByBrand.color || GOLD,
-              background: hexToRgba(CREATOR.broughtByBrand.color || GOLD, 0.10),
-              border: `1px solid ${CREATOR.broughtByBrand.color || GOLD}`,
-              whiteSpace: 'nowrap',
-            }}>Brought by {CREATOR.broughtByBrand.name}</span>
-          ) : CREATOR.isFoundingCreator && (
+          {CREATOR.broughtByBrand ? (() => {
+            // Use the derived mid-tone (never near-black/near-white, never a
+            // fabricated hue for grayscale logos) instead of the raw extracted
+            // color, which is often too dark/light to read against the dark PDF.
+            const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
+            return (
+              <span style={{
+                padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                color: bc.ringLight,
+                background: hexToRgba(bc.ringMid, 0.16),
+                border: `1px solid ${bc.ringMid}`,
+                whiteSpace: 'nowrap',
+              }}>Brought by {CREATOR.broughtByBrand.name}</span>
+            )
+          })() : CREATOR.isFoundingCreator && (
             <span style={{
               padding: '6px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
               color: GOLD, background: 'rgba(232,197,95,0.10)', border: `1px solid ${GOLD}`,
