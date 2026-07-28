@@ -36,12 +36,12 @@ function CreatorCard({ creator, layout = 'marquee' }) {
   const name = creator.name || username
   const score = Number.isFinite(Number(creator.score)) ? Math.round(Number(creator.score)) : null
   const followers = formatCount(creator.followers)
-  // The real card lives at /<username>/<publicId> — a bare /<username> has no
-  // id and the backend treats that as private (see resolveUsername() in
-  // influenceApi.js). Fall back to the live on-the-fly preview when a creator
-  // has no linked account/publicId yet.
+  // The real card now lives at the short /<username> (cards resolve by
+  // username/slug/publicId — see Creator.findByHandle). `publicId` presence
+  // here just means "this is a real signed-up creator" — fall back to the
+  // live on-the-fly preview when they have no linked account yet.
   const href = creator.publicId
-    ? `/${encodeURIComponent(username)}/${encodeURIComponent(creator.publicId)}`
+    ? `/${encodeURIComponent(username)}`
     : `/preview?lookup=${encodeURIComponent(username)}`
 
   // Marquee cards need a fixed width + side margin (they sit in a horizontally

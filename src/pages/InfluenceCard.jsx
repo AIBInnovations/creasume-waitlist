@@ -25,7 +25,8 @@ function DashboardFab() {
   if (typeof window === 'undefined') return null
   const q = new URLSearchParams(window.location.search)
   if (!q.has('owner') && !q.has('preview')) return null
-  // First path segment is the card's username (/<username>/<publicId>).
+  // First path segment is the card's username (/<username>, or the legacy
+  // /<username>/<publicId> form).
   const seg = decodeURIComponent(window.location.pathname.split('/').filter(Boolean)[0] || '')
   if (seg.toLowerCase() !== uname.toLowerCase()) return null
   return (

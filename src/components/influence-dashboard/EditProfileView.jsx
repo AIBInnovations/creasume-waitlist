@@ -1035,16 +1035,13 @@ export default function EditProfileView({ creator = {}, username = '', features 
     { ref: saveRef, title: 'Save & Publish', desc: "Don't forget to save your changes to update your live link." },
   ]
 
-  // The public card + avatar resolve STRICTLY by the opaque publicId (always the
-  // LAST path segment) — a bare /<username> is rejected ("This card isn't
-  // available"). Build the canonical /<username>/<publicId> so the preview loads
-  // the real card. `username` (the URL handle) is the publicId after login, so
-  // it's a safe fallback when creator.publicId hasn't loaded yet.
+  // The public card + avatar resolve by username, slug, or publicId (see
+  // Creator.findByHandle) — prefer the short /<username> form; `username`
+  // (the URL handle) is a safe fallback when creator.username hasn't loaded
+  // yet, and publicId after that if neither is available.
   const uname = creator.username || ''
   const pubId = creator.publicId || username || ''
-  const cardPath = pubId
-    ? (uname ? `/${encodeURIComponent(uname)}/${encodeURIComponent(pubId)}` : `/${encodeURIComponent(pubId)}`)
-    : (uname ? `/${encodeURIComponent(uname)}` : '')
+  const cardPath = uname ? `/${encodeURIComponent(uname)}` : (pubId ? `/${encodeURIComponent(pubId)}` : '')
   const previewSrc = cardPath ? `${cardPath}?preview=${previewKey}` : `/?preview=${previewKey}`
   const avatarSrc = pubId ? `${API_BASE}/public/avatar/${encodeURIComponent(pubId)}` : ''
   // The visible @handle (for the ProfilePanel header); the openable card link

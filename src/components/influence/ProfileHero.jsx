@@ -429,10 +429,9 @@ export default function ProfileHero() {
 
       root = createRoot(host)
       // The live card URL that CTA buttons in the PDF link back to. Use the URL
-      // the user is CURRENTLY viewing — it already carries the unguessable
-      // publicId (/<username>/<publicId>). Reconstructing it from CREATOR.username
-      // dropped the publicId, so the link opened /<username> which the backend
-      // rejects (publicId-only) → "card not available".
+      // the user is CURRENTLY viewing rather than reconstructing it, so it
+      // matches whatever canonical form (short /<username>, or a legacy
+      // /<username>/<publicId> link) the visitor actually opened.
       const cardUrl = window.location.origin + window.location.pathname.replace(/\/+$/, '')
       root.render(<CardPdfDocument data={data} cardUrl={cardUrl} />)
 
@@ -679,7 +678,7 @@ export default function ProfileHero() {
                 (() => {
                   const bc = deriveBadgeColors(CREATOR.broughtByBrand.color)
                   return (
-                    <div className="flex flex-col items-end gap-1 order-first self-center lg:order-none lg:self-auto" style={{ marginTop: -30 }}>
+                    <div className="flex flex-col items-start gap-1 order-first self-center lg:order-none lg:self-auto" style={{ marginTop: -30 }}>
                       <span
                         className="text-[10px] md:text-xs font-medium"
                         style={{ fontFamily: FONT, color: 'rgba(255,255,255,0.45)', letterSpacing: '0.03em' }}
@@ -708,7 +707,7 @@ export default function ProfileHero() {
                         {CREATOR.broughtByBrand.logo && (
                           <span
                             className="inline-flex items-center justify-center rounded-full overflow-hidden shrink-0"
-                            style={{ width: 24, height: 24, background: '#fff' }}
+                            style={{ width: 24, height: 24, background: '#fff', marginLeft: 6 }}
                           >
                             <img
                               src={CREATOR.broughtByBrand.logo}
@@ -718,7 +717,7 @@ export default function ProfileHero() {
                             />
                           </span>
                         )}
-                        <span className="flex-1 text-left">{CREATOR.broughtByBrand.name}</span>
+                        <span className="flex-1 text-left" style={{ marginLeft: 14 }}>{CREATOR.broughtByBrand.name}</span>
                       </span>
                     </div>
                   )

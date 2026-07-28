@@ -88,9 +88,8 @@ const ICONS = {
 }
 
 // Dark URL pill with a copy button (shows a check on success).
-// `display` is the clean link shown to the creator (id hidden); `copyUrl` is the
-// FULL link actually copied/shared (keeps the opaque publicId so the card stays
-// private). So the dashboard looks clean while the shared link stays unguessable.
+// `display` and `copyUrl` are the same creasume.com/<username> link now — kept
+// as two props since callers used to pass a hidden-publicId variant.
 const CardLinkPill = forwardRef(function CardLinkPill({ display, copyUrl }, ref) {
   const [copied, setCopied] = useState(false)
   const copy = async () => {
@@ -1267,14 +1266,10 @@ export default function InfluenceDashboard({ username }) {
         return // load() re-runs for the corrected handle
       }
 
-      // The stats/posts/demographics shown here come from the PUBLIC payload —
-      // and the backend resolves that STRICTLY by publicId (the card is private,
-      // so a @username deliberately does NOT resolve).
-      //
-      // This used to pass the URL segment. That silently broke the dashboard
-      // whenever it sat at /<username>/dashboard: GET /public/<username> 404s →
-      // pub = null → every Instagram metric rendered 0. Always key it off the
-      // signed-in creator's own publicId.
+      // The stats/posts/demographics shown here come from the PUBLIC payload.
+      // The backend now resolves that by username/slug/publicId, but keep
+      // keying this off the signed-in creator's own publicId regardless — it's
+      // stable even if the creator later changes their username.
       const pubRes = await fetchPublic(viewer?.publicId || username).catch(() => null)
       setPub(pubRes)
 
@@ -1439,16 +1434,15 @@ export default function InfluenceDashboard({ username }) {
           : '',
       }
     : null
-  // Public share link: /<username>/<publicId> — the @username is visible (nice,
-  // branded), but the card is resolved by the opaque publicId (the LAST segment),
-  // so it can't be opened by guessing the username. `cardPath` is URL-encoded for
-  // the href; `cardUrl` is the plain display/copy string.
+  // Public share link — the card now resolves by username (or slug, or the
+  // legacy publicId) via Creator.findByHandle, so the clean creasume.com/
+  // <username> form is both what's shown AND what's actually shared. No more
+  // hidden publicId suffix. `cardPath` is URL-encoded for the href.
   const pid = creator.publicId || handle
-  const cardPath = creator.username ? `${encodeURIComponent(creator.username)}/${pid}` : pid
-  // Full link that's actually copied/shared — keeps the publicId so it's private.
-  const cardUrl = `creasume.com/${creator.username ? `${creator.username}/${pid}` : pid}`
-  // Clean link shown in the pill — the id is hidden from view (but still copied).
-  const cardDisplay = `creasume.com/${creator.username || pid}`
+  const handleForUrl = creator.username || pid
+  const cardPath = encodeURIComponent(handleForUrl)
+  const cardUrl = `creasume.com/${handleForUrl}`
+  const cardDisplay = cardUrl
   const fc0 = (v) => formatCount(v) ?? '0'
 
   const inquiryCount =

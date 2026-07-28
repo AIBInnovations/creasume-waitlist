@@ -59,7 +59,7 @@ const GLASS_MENU = {
   boxShadow: '0 20px 50px rgba(0,0,0,0.55)',
 }
 
-export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA, login = true, ctaVariant = 'white' }) {
+export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA, login = true, ctaVariant = 'white', bare = false }) {
   const [open, setOpen] = useState(false)
 
   // The CTA is a solid white pill by default (marketing pages) or a pink→purple
@@ -70,11 +70,11 @@ export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA
       : { color: '#0B0B27', background: '#fff' }
 
   return (
-    <nav id="home" className="relative z-50 px-4 sm:px-8 md:px-12 lg:px-20 py-6">
-      <div className="relative w-full max-w-full lg:max-w-6xl mx-auto">
-        <div className="nav-glass flex items-center justify-between lg:justify-between gap-3 sm:gap-6 lg:gap-8 px-0 sm:px-0 lg:px-8 py-0 lg:py-3 rounded-full">
+    <nav id="home" className={`relative z-50 ${bare ? 'px-0 py-0 -mt-5' : 'px-4 sm:px-8 md:px-12 lg:px-20 py-6'}`}>
+      <div className={`relative w-full ${bare ? '' : 'max-w-full lg:max-w-6xl mx-auto'}`}>
+        <div className={`${bare ? '' : 'nav-glass'} flex items-center justify-between lg:justify-between gap-3 sm:gap-6 lg:gap-8 px-0 sm:px-0 lg:px-8 py-0 lg:py-3 rounded-full`}>
           {/* Plain logo (no pill/button) → back to the landing home. */}
-          <a href="/landing" onClick={navClick('/landing')} className="flex items-center pl-2 sm:pl-3 h-10 sm:h-11 lg:h-13 shrink-0">
+          <a href="/landing" onClick={navClick('/landing')} className={`flex items-center h-10 sm:h-11 lg:h-13 shrink-0 ${bare ? '-ml-7' : 'pl-2 sm:pl-3'}`}>
             <img src="/creasumelogo.svg" alt="Creasume" className="h-6 sm:h-8 lg:h-9 w-auto" />
           </a>
 

@@ -31,15 +31,16 @@ function detectOwner() {
 
 const InfluenceContext = createContext({ ...DEFAULTS, ready: false })
 
-// After the card loads, normalise the address bar to /<username>/<publicId> so
-// the @username is visible even when opened via a legacy /<publicId> link or a
-// wrong username. The publicId (last segment) is what actually resolved it, so
-// this is purely cosmetic. Skipped in the Edit-Profile preview iframe.
+// After the card loads, normalise the address bar to the short /<username>
+// form — cards resolve by username/slug/publicId now (see
+// Creator.findByHandle), so a legacy /<username>/<publicId> link, or one
+// opened by publicId/slug alone, all clean up to the same canonical URL.
+// Skipped in the Edit-Profile preview iframe.
 function canonicalizeCardUrl(creator) {
   try {
-    if (typeof window === 'undefined' || !creator || !creator.publicId || !creator.username) return
+    if (typeof window === 'undefined' || !creator || !creator.username) return
     if (new URLSearchParams(window.location.search).has('preview')) return
-    const want = `/${encodeURIComponent(creator.username)}/${creator.publicId}`
+    const want = `/${encodeURIComponent(creator.username)}`
     const current = window.location.pathname.replace(/\/+$/, '')
     if (current !== want) {
       window.history.replaceState({}, '', want + window.location.search + window.location.hash)

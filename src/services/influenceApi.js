@@ -97,11 +97,10 @@ export function resolveUsername() {
   const path = window.location.pathname.replace(/\/+$/, '')
   const parts = path.split('/').filter(Boolean)
   if (!parts.length || RESERVED_PATHS.includes(parts[0])) return ''
-  // Card URLs are /<username>/<publicId> (username visible, unguessable id) — or
-  // the legacy /<publicId>. Either way the card is resolved by the opaque
-  // publicId, which is ALWAYS the LAST path segment. A bare /<username> (no id)
-  // therefore resolves to the username, which the backend rejects (publicId-only)
-  // → the card stays private.
+  // Cards resolve by username, vanity slug, or the legacy opaque publicId
+  // (see Creator.findByHandle) — the canonical URL is now the short
+  // /<username>, but a two-segment /<username>/<publicId> link (or a bare
+  // /<publicId>) still works, so just take the LAST path segment either way.
   return decodeURIComponent(parts[parts.length - 1])
 }
 

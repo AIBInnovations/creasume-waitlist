@@ -13,6 +13,7 @@ const ContactUs = lazy(() => import('./pages/ContactUs.jsx'))
 const PricingPage = lazy(() => import('./pages/PricingPage.jsx'))
 const HowItWorks = lazy(() => import('./pages/HowItWorks.jsx'))
 const BrowseCreators = lazy(() => import('./pages/BrowseCreators.jsx'))
+const BrandRoster = lazy(() => import('./pages/BrandRoster.jsx'))
 const Login = lazy(() => import('./pages/Login.jsx'))
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword.jsx'))
 const ResetPassword = lazy(() => import('./pages/ResetPassword.jsx'))
@@ -176,6 +177,12 @@ function pickRoute(route) {
   // `/landing` renders the new marketing landing page (distinct from the
   // waitlist home). Matched before the `/<username>` catch-all below.
   if (route === '/landing') return <LandingPage />
+
+  // `/roster/:slug` — a brand's shareable curated creator page (random short
+  // code, never a guessable brand slug — see backend routes/adminRosters.js).
+  // Matched before the final catch-all so it never falls through to InfluenceCard.
+  const rosterMatch = route.match(/^\/roster\/([^/]+)\/?$/)
+  if (rosterMatch) return <BrandRoster slug={decodeURIComponent(rosterMatch[1])} />
 
   // `/waitlist` is the home page anchored to the waitlist section (scroll
   // handled by the effect above) — kept clean so the URL has no `#`.
