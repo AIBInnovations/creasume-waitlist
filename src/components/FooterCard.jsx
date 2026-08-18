@@ -5,22 +5,24 @@
 // /pricing). The router (router.js) prefers the pathname and IGNORES hash routes
 // like `#/terms` whenever the path isn't "/", so those links did nothing here.
 // Everything therefore navigates through the History API (goToPath), exactly
-// like SiteNav does. In-page section links first go to /landing, then scroll to
-// the section once it has mounted (LandingPage reads the hash on load).
+// like SiteNav does. In-page section links first go to the home page `/` (which
+// renders the landing page), then scroll to the section once it has mounted
+// (LandingPage reads the hash on load).
 
 import { goToPath } from '../router.js'
 
 const FONT = "'Outfit', sans-serif"
 
-// Smooth-scroll to a section on the landing page. If we're already on /landing,
-// just scroll; otherwise navigate there carrying the target id in the hash —
-// LandingPage's mount effect does the scroll once the section exists.
+// Smooth-scroll to a section on the landing page, which is the home page `/`.
+// If we're already there, just scroll; otherwise navigate home carrying the
+// target id in the hash — LandingPage's mount effect does the scroll once the
+// section exists.
 function goToLandingSection(id) {
-  const onLanding = window.location.pathname.replace(/\/+$/, '') === '/landing'
+  const onLanding = window.location.pathname.replace(/\/+$/, '') === ''
   if (onLanding) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   } else {
-    window.history.pushState({}, '', `/landing#${id}`)
+    window.history.pushState({}, '', `/#${id}`)
     window.dispatchEvent(new PopStateEvent('popstate'))
     window.scrollTo({ top: 0 })
   }
@@ -62,7 +64,7 @@ function onNavClick(kind, target) {
 
 // href is only for hover/right-click affordance; onNavClick drives the SPA nav.
 function hrefFor(kind, target) {
-  return kind === 'route' ? target : `/landing#${target}`
+  return kind === 'route' ? target : `/#${target}`
 }
 
 function NavColumn({ title, links }) {

@@ -32,6 +32,17 @@ function RouteFallback() {
   return <div className="min-h-screen bg-black" />
 }
 
+// Rewrites the current URL to `/` and re-renders, so the legacy `/landing`
+// address lands on the home page without a full reload. Renders the same black
+// placeholder for the one frame the swap takes.
+function RedirectHome() {
+  useEffect(() => {
+    window.history.replaceState({}, '', '/')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }, [])
+  return <RouteFallback />
+}
+
 // Site-wide Lenis smooth scrolling. Lenis scrolls the real document, so
 // framer-motion's useScroll (the perk-card scrubs, etc.) keeps tracking
 // normally. In-page anchor clicks (#home, #vision, …) are routed through
@@ -174,9 +185,11 @@ function pickRoute(route) {
   // reads the ?lookup= param. Matched before the `/<username>` catch-all.
   if (route === '/preview') return <InfluenceCard />
 
-  // `/landing` renders the new marketing landing page (distinct from the
-  // waitlist home). Matched before the `/<username>` catch-all below.
-  if (route === '/landing') return <LandingPage />
+  // `/landing` is the OLD address of the marketing landing page, which is now
+  // the home page at `/`. Redirect so there is a single canonical home URL and
+  // existing /landing links keep working. Matched before the `/<username>`
+  // catch-all below (otherwise `landing` reads as a creator handle).
+  if (route === '/landing') return <RedirectHome />
 
   // `/roster/:slug` — a brand's shareable curated creator page (random short
   // code, never a guessable brand slug — see backend routes/adminRosters.js).
@@ -184,13 +197,15 @@ function pickRoute(route) {
   const rosterMatch = route.match(/^\/roster\/([^/]+)\/?$/)
   if (rosterMatch) return <BrandRoster slug={decodeURIComponent(rosterMatch[1])} />
 
-  // `/waitlist` is the home page anchored to the waitlist section (scroll
-  // handled by the effect above) — kept clean so the URL has no `#`.
+  // `/waitlist` is the old waitlist home (App.jsx), anchored to the waitlist
+  // section (scroll handled by the effect above) — kept clean so the URL has no
+  // `#`. It is no longer the site home; `/` renders the landing page below.
   if (route === '/waitlist') return <App />
-  // Home at '/'. ANY other clean path is a creator handle → media kit
+  // ANY other clean path is a creator handle → media kit
   // (e.g. `/finding.rhythm`). The username is read in influenceApi.
   if (route !== '/') return <InfluenceCard />
-  return <App />
+  // Home at '/' is the marketing landing page.
+  return <LandingPage />
 }
 
 export default Root

@@ -4,6 +4,8 @@
 //   • `links`       — [{ id, label, href }]. Defaults to the marketing pages set.
 //   • `cta`         — { label, href } for the primary button.
 //   • `login`       — show a plain "Login" link before the CTA (default true).
+//   • `onLogout`    — when passed, a "Log Out" pill renders in the Login slot
+//                     and calls this instead of navigating (see LandingPage).
 //   • `ctaVariant`  — 'white' (default) | 'gradient' pink→purple CTA.
 // Page links navigate via the SPA router (see navClick); in-page anchors
 // (#home, #vision) glide to the matching section. On desktop everything sits in
@@ -59,7 +61,7 @@ const GLASS_MENU = {
   boxShadow: '0 20px 50px rgba(0,0,0,0.55)',
 }
 
-export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA, login = true, ctaVariant = 'white', bare = false }) {
+export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA, login = true, onLogout, ctaVariant = 'white', bare = false }) {
   const [open, setOpen] = useState(false)
 
   // The CTA is a solid white pill by default (marketing pages) or a pink→purple
@@ -73,8 +75,8 @@ export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA
     <nav id="home" className={`relative z-50 ${bare ? 'px-0 py-0 -mt-5' : 'px-4 sm:px-8 md:px-12 lg:px-20 py-6'}`}>
       <div className={`relative w-full ${bare ? '' : 'max-w-full lg:max-w-6xl mx-auto'}`}>
         <div className={`${bare ? '' : 'nav-glass'} flex items-center justify-between lg:justify-between gap-3 sm:gap-6 lg:gap-8 px-0 sm:px-0 lg:px-8 py-0 lg:py-3 rounded-full`}>
-          {/* Plain logo (no pill/button) → back to the landing home. */}
-          <a href="/landing" onClick={navClick('/landing')} className={`flex items-center h-10 sm:h-11 lg:h-13 shrink-0 ${bare ? '-ml-7' : 'pl-2 sm:pl-3'}`}>
+          {/* Plain logo (no pill/button) → back to the home page (landing). */}
+          <a href="/" onClick={navClick('/')} className={`flex items-center h-10 sm:h-11 lg:h-13 shrink-0 ${bare ? '-ml-7' : 'pl-2 sm:pl-3'}`}>
             <img src="/creasumelogo.svg" alt="Creasume" className="h-6 sm:h-8 lg:h-9 w-auto" />
           </a>
 
@@ -103,6 +105,16 @@ export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA
 
           {/* Desktop login + CTA */}
           <div className="hidden lg:flex items-center gap-2 lg:ml-1">
+            {onLogout && (
+              <button
+                type="button"
+                onClick={onLogout}
+                className="px-6 h-13 flex items-center rounded-full font-medium text-white hover:brightness-125 transition cursor-pointer"
+                style={{ fontFamily: FONT, fontSize: '18px', ...DARK_CHIP }}
+              >
+                Log Out
+              </button>
+            )}
             {login && (
               <a
                 href={LOGIN_HREF}
@@ -163,6 +175,16 @@ export default function SiteNav({ active, links = DEFAULT_NAV, cta = DEFAULT_CTA
                 {tab.label}
               </a>
             ))}
+            {onLogout && (
+              <button
+                type="button"
+                onClick={() => { setOpen(false); onLogout() }}
+                className="px-4 py-3 rounded-xl font-medium whitespace-nowrap text-white/90 text-left cursor-pointer"
+                style={{ fontFamily: FONT, fontSize: '16px' }}
+              >
+                Log Out
+              </button>
+            )}
             {login && (
               <a
                 href={LOGIN_HREF}

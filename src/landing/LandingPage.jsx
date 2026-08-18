@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, MotionConfig, useScroll } from 'framer-motion'
 import { goToPath } from '../router.js'
-import { isLoggedIn, getStoredUsername, dashboardBase } from '../services/dashboardApi.js'
+import { isLoggedIn, getStoredUsername, dashboardBase, clearAuth } from '../services/dashboardApi.js'
 import { fetchLandingContent } from '../services/influenceApi.js'
 import { fadeUp, outlineDraw, staggerParent } from '../motion-variants.js'
 import { CountUp, Typewriter } from '../anim.jsx'
@@ -130,8 +130,19 @@ export default function LandingPage() {
   // Falls back to /connect when we don't yet have a username (e.g. account made
   // but Instagram not linked). Logged-out visitors keep the Start Now → signup
   // flow unchanged.
-  const loggedIn = isLoggedIn()
+  // Held in state (seeded from storage) so signing out re-renders the nav from
+  // the signed-in set of items to the signed-out one without a page reload.
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn)
   const dashHref = loggedIn ? (getStoredUsername() ? dashboardBase(getStoredUsername()) : '/connect') : '/signup'
+
+  // Sign out from the landing page: drop the stored token/username (same helper
+  // the dashboard's logout uses), then stay here — the nav swaps back to
+  // "Sign In" + "Get Your Free Media Kit" and the CTAs point at /signup again.
+  const handleLogout = () => {
+    clearAuth()
+    setLoggedIn(false)
+    window.scrollTo({ top: 0 })
+  }
   const primaryLabel = loggedIn ? 'Go to Dashboard' : 'Start Now'
 
   // The PRICING cards are a buying intent, not a "get to my dashboard" intent —
@@ -145,7 +156,7 @@ export default function LandingPage() {
   const [landing, setLanding] = useState({ creators: [], testimonials: [], brands: [] })
   useEffect(() => { fetchLandingContent().then(setLanding) }, [])
 
-  // Arrived from a footer section link on another page (e.g. /landing#testimonial,
+  // Arrived from a footer section link on another page (e.g. /#testimonial,
   // set by FooterCard.goToLandingSection). Scroll to that section once it has
   // laid out — the small delay lets the below-the-fold sections mount first.
   useEffect(() => {
@@ -171,7 +182,7 @@ export default function LandingPage() {
         title="Verified Dynamic Media Kits & Brand Deals — Creasume"
         description="Build a verified dynamic media kit with live social insights, audience analytics, past collaborations and transparent pricing. Connect with brands and close deals."
         keywords="dynamic media kit, verified media kit, creator media kit, influencer media kit, brand deals, creator marketplace, Instagram analytics, influencer marketing"
-        path="/landing"
+        path="/"
         jsonLd={{
           '@context': 'https://schema.org',
           '@graph': [
@@ -190,7 +201,7 @@ export default function LandingPage() {
             },
             {
               '@type': 'FAQPage',
-              '@id': 'https://creasume.com/landing#faq',
+              '@id': 'https://creasume.com/#faq',
               mainEntity: FAQS_PLAIN.map(({ q, a }) => ({
                 '@type': 'Question',
                 name: q,
@@ -232,6 +243,7 @@ export default function LandingPage() {
         cta={loggedIn
           ? { label: 'Go to Dashboard', href: dashHref }
           : { label: 'Get Your Free Media Kit', href: '/signup' }}
+        onLogout={loggedIn ? handleLogout : undefined}
         ctaVariant="gradient"
       />
 
