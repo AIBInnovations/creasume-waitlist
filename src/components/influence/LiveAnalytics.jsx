@@ -519,6 +519,32 @@ function Panel({ title, children, from = 'up', className = '', bare = false, sty
   )
 }
 
+/**
+ * Shown in place of a chart when there is no real data behind it. Deliberately
+ * plain: the charts used to fall back to demo numbers or a fabricated flat
+ * line, which read as genuine analytics. Saying "nothing yet" is the honest
+ * version and keeps the panel the same height so the grid doesn't jump.
+ */
+function ChartEmptyState({ label, hint }) {
+  return (
+    <div
+      className="flex flex-col items-center justify-center text-center rounded-xl px-5"
+      style={{
+        minHeight: 180,
+        border: '1px dashed rgba(255,255,255,0.14)',
+        background: 'rgba(255,255,255,0.02)',
+      }}
+    >
+      <div className="text-white/70 text-sm" style={{ fontFamily: FONT }}>{label}</div>
+      {hint && (
+        <div className="mt-2 text-[11px] text-white/45 max-w-[280px]" style={{ fontFamily: MONO }}>
+          {hint}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function LiveAnalytics() {
   const {
     GROWTH, MONTHS, ENGAGEMENT_BARS, ENG_MONTHS, GROWTH_POINTS, ENG_POINTS, ENG_POINTS_WEEKLY, ENG_FROM_POSTS,
@@ -534,8 +560,13 @@ export default function LiveAnalytics() {
         ? weeklyEngSeries(ENG_POINTS_WEEKLY || [])
         : monthlyEngSeries(ENG_POINTS || [], range === '1Y' ? 12 : 3))
     : buildTimeSeries(ENG_POINTS || [], range, 'rate', (value) => Math.round(value * 10) / 10)
-  const engBars = engSeries.values.length ? engSeries.values : ENGAGEMENT_BARS
-  const engMonths = engSeries.labels.length ? engSeries.labels : (ENG_MONTHS || MONTHS)
+  // No synthetic fallback: this used to drop to the hardcoded ENGAGEMENT_BARS
+  // demo numbers whenever the real series was empty, so a creator with no
+  // history saw invented bars presented as their own analytics. Empty now stays
+  // empty and the panel renders an explicit "not enough data yet" message.
+  const engBars = engSeries.values
+  const engMonths = engSeries.labels
+  const hasEngData = engBars.length > 0
 
   // Follower growth: plot the ACTUAL dated snapshots positioned by their real
   // date within the window (no carry-forward resampling), so the trend is exact
@@ -605,6 +636,9 @@ export default function LiveAnalytics() {
       })
     }
   } else {
+    // No dated snapshots in this window. GROWTH/MONTHS are the sample-card demo
+    // series and are empty for a real creator, so this yields no points and
+    // FollowerGrowthChart draws its flat baseline (its n < 2 case).
     growthPoints = GROWTH.map((v, i) => ({
       x: GROWTH.length < 2 ? 50 : (i / (GROWTH.length - 1)) * 100,
       label: MONTHS[i] || '',
@@ -668,6 +702,9 @@ export default function LiveAnalytics() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pl-4 md:pl-8">
           <Panel title="Follower Growth" from="left" style={{ background: 'linear-gradient(155deg, #1b2052 0%, #10133C 60%)' }}>
+            {/* Always render the chart — even with little/no history the chart draws
+                a flat baseline (see FollowerGrowthChart's n < 2 case), so we show the
+                graph rather than a "no history yet" remark. */}
             <FollowerGrowthChart points={growthPoints} xLabels={growthXLabels} range={range} />
             <p className="mt-3 ml-3 text-[11px] italic text-white/60" style={{ fontFamily: MONO }}>
               &ldquo;This chart only shows the follower growth of the creator after joining Creasume.&rdquo;
@@ -675,7 +712,14 @@ export default function LiveAnalytics() {
           </Panel>
 
           <Panel title="Engagement Rate" from="right" style={{ background: 'linear-gradient(155deg, #1b2052 0%, #10133C 60%)' }}>
-            <EngagementChart bars={engBars} months={engMonths} />
+            {hasEngData ? (
+              <EngagementChart bars={engBars} months={engMonths} />
+            ) : (
+              <ChartEmptyState
+                label="Engagement history isn't available yet."
+                hint="This needs Instagram reach data, which arrives once the connected account has enough recent activity."
+              />
+            )}
           </Panel>
 
           {/* Audience Insights + Top Locations / gender — combined card.

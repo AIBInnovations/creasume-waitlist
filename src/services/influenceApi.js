@@ -635,23 +635,25 @@ export function mapInfluenceData(api, d) {
   // the component. Followers + engagement come from the backend's daily
   // snapshots (growth[]), so both charts read the SAME real history.
   const GROWTH_POINTS = growth.map((g) => ({ date: g.date, followers: g.followers }))
-  // Whole-profile engagement rate over time, bucketed by month by the backend
-  // (avg interactions per post that month ÷ followers × 100). This varies month
-  // to month and is available immediately. Falls back to daily snapshot history,
-  // then to the current whole-profile rate flat — never per-post.
+  // Whole-profile engagement rate over time, bucketed by the backend (per-week
+  // for 30D, per-month for 90D/1Y). Falls back to our own daily snapshot
+  // history when the backend doesn't supply buckets — e.g. on the Free plan,
+  // where planGateService strips engagementHistory/engagementWeekly.
+  //
+  // There is deliberately NO synthetic fallback here. This used to end with two
+  // fabricated points a year apart, both carrying the CURRENT rate, which drew
+  // a dead-flat year-long line out of a single number and looked identical on
+  // 30D / 90D / 1Y. An empty array is honest: the chart renders its
+  // "not enough history yet" state instead of inventing a trend.
+  //
+  // Note the `!= null` test rather than `> 0`: a measured 0% is real history and
+  // must be plotted, while null means "couldn't be measured" and is dropped.
   const engHistory = Array.isArray(api.engagementHistory) ? api.engagementHistory : []
   const ENG_POINTS = engHistory.length
     ? engHistory.map((e) => ({ date: e.date, rate: e.rate }))
-    : growth.some((g) => g.engagement > 0)
-      ? growth
-          .filter((g) => g.engagement > 0)
-          .map((g) => ({ date: g.date, rate: g.engagement }))
-      : s.engagementRate != null
-        ? [
-            { date: new Date(Date.now() - 365 * 86400000).toISOString(), rate: s.engagementRate },
-            { date: new Date().toISOString(), rate: s.engagementRate },
-          ]
-        : []
+    : growth
+        .filter((g) => g.engagement != null)
+        .map((g) => ({ date: g.date, rate: g.engagement }))
   // Weekly buckets so the 30-day view varies week-to-week; falls back to the
   // monthly series when the backend doesn't supply weekly data.
   const engWeekly = Array.isArray(api.engagementWeekly) ? api.engagementWeekly : []
