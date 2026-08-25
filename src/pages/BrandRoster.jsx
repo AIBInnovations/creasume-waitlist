@@ -15,7 +15,7 @@ const FONT = "'Inter', sans-serif"
 // display so the badge next to a polished brand logo doesn't look raw/unstyled.
 const titleCase = (s) => s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
 
-export default function BrandRoster({ slug }) {
+export default function BrandRoster({ slug, fallback = null }) {
   const [brandName, setBrandName] = useState('')
   const [brandLogo, setBrandLogo] = useState('')
   const [creators, setCreators] = useState([])
@@ -42,6 +42,10 @@ export default function BrandRoster({ slug }) {
     return () => { alive = false }
   }, [slug])
 
+  // Root-level agency URLs share the same /<name> shape as creator cards.
+  // If the API says this isn't an agency, render the creator route unchanged.
+  if (!loading && notFound && fallback) return fallback
+
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-clip bg-black text-white">
       <Seo
@@ -58,15 +62,15 @@ export default function BrandRoster({ slug }) {
       <section className="relative z-10 px-6 sm:px-12 md:px-20 pt-6 md:pt-10 pb-6 text-center">
         {/* Small badge — logo + brand name, like a "made by" credit line. */}
         {brandName && (
-          <div className="inline-flex items-center gap-3 mb-5" style={{ fontFamily: FONT }}>
+          <div className="inline-flex items-center gap-4 sm:gap-5 mb-6" style={{ fontFamily: FONT }}>
             {brandLogo && (
               <img
                 src={brandLogo}
                 alt={brandName}
-                className="h-10 w-10 rounded-full object-cover border border-white/15 shrink-0"
+                className="h-16 w-16 sm:h-[72px] sm:w-[72px] rounded-full object-cover border border-white/15 shrink-0"
               />
             )}
-            <span className="text-lg sm:text-xl font-medium text-white/70">{titleCase(brandName)}</span>
+            <span className="text-2xl sm:text-3xl font-semibold text-white/80">{titleCase(brandName)}</span>
           </div>
         )}
         {/* The actual headline — big and bold. */}

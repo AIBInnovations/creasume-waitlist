@@ -203,6 +203,10 @@ function pickRoute(route) {
   if (route === '/waitlist') return <App />
   // ANY other clean path is a creator handle → media kit
   // (e.g. `/finding.rhythm`). The username is read in influenceApi.
+  const cleanName = route.match(/^\/([^/]+)\/?$/)
+  if (cleanName) {
+    return <BrandRoster slug={decodeURIComponent(cleanName[1])} fallback={<InfluenceCard />} />
+  }
   if (route !== '/') return <InfluenceCard />
   // Home at '/' is the marketing landing page.
   return <LandingPage />
