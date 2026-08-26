@@ -101,7 +101,13 @@ export async function fetchRoster(slug) {
     err.status = res.status
     throw err
   }
-  return { brandName: data.brandName || '', brandLogo: data.brandLogo || '', creators: data.creators || [] }
+  return {
+    brandName: data.brandName || '',
+    brandLogo: data.brandLogo || '',
+    contactPhone: data.contactPhone || '',
+    contactEmail: data.contactEmail || '',
+    creators: data.creators || [],
+  }
 }
 
 export function resolveUsername() {
@@ -635,35 +641,51 @@ export function mapInfluenceData(api, d) {
   // the component. Followers + engagement come from the backend's daily
   // snapshots (growth[]), so both charts read the SAME real history.
   const GROWTH_POINTS = growth.map((g) => ({ date: g.date, followers: g.followers }))
-  // Whole-profile engagement rate over time, bucketed by the backend (per-week
-  // for 30D, per-month for 90D/1Y). Falls back to our own daily snapshot
-  // history when the backend doesn't supply buckets — e.g. on the Free plan,
-  // where planGateService strips engagementHistory/engagementWeekly.
+  // Whole-profile engagement rate over time, bucketed by the backend from
+  // account-level insights (per-week for 30D, per-month for 90D/1Y).
   //
-  // There is deliberately NO synthetic fallback here. This used to end with two
-  // fabricated points a year apart, both carrying the CURRENT rate, which drew
-  // a dead-flat year-long line out of a single number and looked identical on
-  // 30D / 90D / 1Y. An empty array is honest: the chart renders its
-  // "not enough history yet" state instead of inventing a trend.
+  // FREE AND PAID MUST READ THE SAME SOURCE. Free only gets less DEPTH: the
+  // backend sends engagementWeekly to every plan and withholds the long monthly
+  // engagementHistory below 'full'. So when the monthly series is absent we fall
+  // back to the WEEKLY series (same origin, same formula), never to
+  // growth[].engagement.
+  //
+  // Those daily snapshots are a last resort only. Their rate is computed over a
+  // TRAILING-30-DAY reach on whichever days the cron happened to run, so it
+  // answers a different question than the per-period buckets — using it for one
+  // plan and the buckets for another made the same creator's same month show
+  // different numbers on Free vs Paid.
+  //
+  // There is deliberately NO synthetic fallback: this chain used to end with two
+  // fabricated points a year apart, both carrying the CURRENT rate, drawing a
+  // dead-flat year-long line out of a single number. An empty array is honest —
+  // the chart renders its "not enough history yet" state instead.
   //
   // Note the `!= null` test rather than `> 0`: a measured 0% is real history and
   // must be plotted, while null means "couldn't be measured" and is dropped.
   const engHistory = Array.isArray(api.engagementHistory) ? api.engagementHistory : []
+  const engWeekly = Array.isArray(api.engagementWeekly) ? api.engagementWeekly : []
+  const snapshotEng = growth
+    .filter((g) => g.engagement != null)
+    .map((g) => ({ date: g.date, rate: g.engagement }))
   const ENG_POINTS = engHistory.length
     ? engHistory.map((e) => ({ date: e.date, rate: e.rate }))
-    : growth
-        .filter((g) => g.engagement != null)
-        .map((g) => ({ date: g.date, rate: g.engagement }))
+    : engWeekly.length
+      ? engWeekly.map((e) => ({ date: e.date, rate: e.rate }))
+      : snapshotEng
   // Weekly buckets so the 30-day view varies week-to-week; falls back to the
   // monthly series when the backend doesn't supply weekly data.
-  const engWeekly = Array.isArray(api.engagementWeekly) ? api.engagementWeekly : []
   const ENG_POINTS_WEEKLY = engWeekly.length
     ? engWeekly.map((e) => ({ date: e.date, rate: e.rate }))
     : ENG_POINTS
   // True when the series is real per-post-month/week data (so the chart should
   // show each period's actual value — 0 where there were no posts — instead of
   // carrying the previous value forward and looking falsely flat).
-  const ENG_FROM_POSTS = engHistory.length > 0
+  // True whenever the series came from the backend's real per-period buckets —
+  // monthly OR weekly. Weekly counts: Free gets only engagementWeekly, and
+  // testing this on engHistory alone sent the free card down the carry-forward
+  // resampling path while paid used exact buckets, so the two disagreed.
+  const ENG_FROM_POSTS = engHistory.length > 0 || engWeekly.length > 0
 
   // ---- Audience: age distribution, top cities, gender split ----
   // Real data only — each stays empty until Instagram demographics arrive.
