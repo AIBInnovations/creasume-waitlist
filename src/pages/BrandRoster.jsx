@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import SiteNav from '../components/SiteNav.jsx'
-import Footer from '../components/Footer.jsx'
 import Seo from '../shared/Seo.jsx'
 import CreatorCard from '../components/CreatorCard.jsx'
 import { fetchRoster } from '../services/influenceApi.js'
@@ -18,6 +17,8 @@ const titleCase = (s) => s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + 
 export default function BrandRoster({ slug, fallback = null }) {
   const [brandName, setBrandName] = useState('')
   const [brandLogo, setBrandLogo] = useState('')
+  const [contactPhone, setContactPhone] = useState('')
+  const [contactEmail, setContactEmail] = useState('')
   const [creators, setCreators] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -31,6 +32,8 @@ export default function BrandRoster({ slug, fallback = null }) {
         if (!alive) return
         setBrandName(res.brandName)
         setBrandLogo(res.brandLogo)
+        setContactPhone(res.contactPhone || '')
+        setContactEmail(res.contactEmail || '')
         setCreators(res.creators)
       })
       .catch((e) => {
@@ -42,9 +45,14 @@ export default function BrandRoster({ slug, fallback = null }) {
     return () => { alive = false }
   }, [slug])
 
-  // Root-level agency URLs share the same /<name> shape as creator cards.
-  // If the API says this isn't an agency, render the creator route unchanged.
-  if (!loading && notFound && fallback) return fallback
+  // Root-level agency URLs share the same /<name> shape as creator cards, so at
+  // first we don't know which this is. Optimise for the common case — a creator
+  // card — by rendering the creator fallback WHILE we're still checking, and if
+  // the API confirms this isn't an agency. That way the visitor sees the correct
+  // creator-card skeleton, never the "Managed Creators" roster skeleton, on a
+  // normal card open. The explicit /roster/:slug route passes no fallback, so it
+  // still shows the roster skeleton correctly.
+  if (fallback && (loading || notFound)) return fallback
 
   return (
     <div className="relative min-h-screen flex flex-col overflow-x-clip bg-black text-white">
@@ -111,7 +119,24 @@ export default function BrandRoster({ slug, fallback = null }) {
         </div>
       </section>
 
-      <Footer />
+      {/* Brand contact — admin-provided phone / email for this roster link. */}
+      {!loading && !notFound && (contactPhone || contactEmail) && (
+        <section className="relative z-10 px-6 sm:px-10 md:px-20 pb-16 text-center" style={{ fontFamily: FONT }}>
+          <div className="text-white/50 text-sm uppercase tracking-widest mb-3">Get in touch</div>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+            {contactPhone && (
+              <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="text-white/90 hover:text-white text-lg font-medium transition-colors">
+                📞 {contactPhone}
+              </a>
+            )}
+            {contactEmail && (
+              <a href={`mailto:${contactEmail}`} className="text-white/90 hover:text-white text-lg font-medium transition-colors">
+                ✉️ {contactEmail}
+              </a>
+            )}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
