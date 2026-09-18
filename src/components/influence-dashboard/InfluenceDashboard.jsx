@@ -41,6 +41,7 @@ import {
   cancelSubscription,
   downgradePlan,
   validateReferralCode,
+  connectInstagramUrl,
   API_BASE,
 } from '../../services/dashboardApi.js'
 import { deriveBadgeColors, hexToRgba } from '../../utils/brandBadgeColors.js'
@@ -1195,6 +1196,9 @@ export default function InfluenceDashboard({ username }) {
   // hitting a 402 from the API.
   const [features, setFeatures] = useState({})
   const [myPlan, setMyPlan] = useState(null)
+  // GET /creator/me → instagram {connected, tokenExpired}: is the 60-day Meta
+  // token dead? If so the live card is frozen and the creator must reconnect.
+  const [igStatus, setIgStatus] = useState(null)
   const [pub, setPub] = useState(null)      // GET /public/:username → the URL creator
   const [stats, setStats] = useState(null)  // GET /creator/dashboard-stats (signed in)
   const [inquiries, setInquiries] = useState([])
@@ -1247,6 +1251,10 @@ export default function InfluenceDashboard({ username }) {
       // Plan + feature flags travel with /creator/me.
       setFeatures(meRes?.features || {})
       setMyPlan(meRes?.plan || null)
+      // Instagram token health also travels with /creator/me. An expired
+      // 60-day Meta token silently freezes the live card (no views /
+      // engagement / top posts) — surface it instead of hiding it.
+      setIgStatus(meRes?.instagram || null)
 
       // The dashboard is the signed-in creator's OWN private control center —
       // it always edits `me`, never the creator named in the URL. So if the URL
@@ -1860,6 +1868,33 @@ export default function InfluenceDashboard({ username }) {
             {error && (
               <div className="rounded-xl px-5 py-4 text-[14px]" style={{ fontFamily: FONT, color: '#FB7185', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)' }}>
                 {error}
+              </div>
+            )}
+
+            {/* Instagram token expired — the live card is FROZEN (no views /
+                engagement / top posts) until the creator reconnects. Meta's
+                60-day tokens can't be revived by the server once dead, so this
+                banner is the only road back. */}
+            {igStatus?.tokenExpired && (
+              <div
+                className="rounded-2xl px-7 py-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                style={{ background: 'linear-gradient(120% 120% at 0% 0%, #3a2c14 0%, #2a1f0d 55%, #1f170a 100%)', border: '1px solid rgba(245,158,11,0.45)' }}
+              >
+                <div>
+                  <div className="text-white font-semibold text-xl mb-1.5" style={{ fontFamily: FONT }}>
+                    ⚠️ Your Instagram connection has expired
+                  </div>
+                  <div className="text-white/60 text-base" style={{ fontFamily: FONT }}>
+                    Live stats, engagement and top posts on your public card stopped updating. Reconnect to bring them back — it takes under a minute.
+                  </div>
+                </div>
+                <a
+                  href={connectInstagramUrl()}
+                  className="inline-flex items-center justify-center shrink-0 rounded-xl px-5 h-11 text-[15px] font-semibold text-white no-underline transition-opacity hover:opacity-90"
+                  style={{ fontFamily: FONT, background: 'rgba(245,158,11,0.85)', border: '1px solid rgba(245,158,11,0.9)' }}
+                >
+                  Reconnect Instagram
+                </a>
               </div>
             )}
 
