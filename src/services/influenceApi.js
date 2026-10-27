@@ -147,17 +147,29 @@ function lookupImageUrl(url, width = 900, height = 0) {
 // exposes publicly are filled; reach/impressions/demographics stay empty (they
 // need the creator's own token), so those card sections hide themselves.
 function lookupToApiShape(d) {
-  const media = (d.recentPosts || []).map((p) => ({
-    id: p.id,
-    caption: p.caption || '',
-    media_type: p.isVideo ? 'VIDEO' : 'IMAGE',
-    media_url: lookupImageUrl(p.thumbnail),
-    thumbnail_url: lookupImageUrl(p.thumbnail),
-    raw_media_url: p.thumbnail,
-    permalink: p.permalink,
-    like_count: p.likes || 0,
-    comments_count: p.comments || 0,
-  }))
+  // Public lookup only exposes likes + comments per post. Views / saves / shares
+  // are owner-only, so — like reach & impressions below — they're SAMPLE values
+  // scaled from the real engagement (comments stand in when likes are hidden),
+  // instead of a card full of zeros. Replaced by real numbers once connected.
+  const media = (d.recentPosts || []).map((p) => {
+    const likes = p.likes || 0
+    const comments = p.comments || 0
+    const base = likes || comments * 20
+    return {
+      id: p.id,
+      caption: p.caption || '',
+      media_type: p.isVideo ? 'VIDEO' : 'IMAGE',
+      media_url: lookupImageUrl(p.thumbnail),
+      thumbnail_url: lookupImageUrl(p.thumbnail),
+      raw_media_url: p.thumbnail,
+      permalink: p.permalink,
+      like_count: likes,
+      comments_count: comments,
+      views: Math.round((base + comments) * (p.isVideo ? 20 : 10)),
+      saved: Math.round(base * 0.06),
+      shares: Math.round(base * 0.03),
+    }
+  })
   // Sample (dummy) collaborations + packages shown ONLY in the lookup preview,
   // so a creator who isn't on Creasume yet can see what their full card would
   // look like. Real followers/likes/comments stay real; these are placeholders.
