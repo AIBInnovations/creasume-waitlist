@@ -118,7 +118,7 @@ export default function TopPosts() {
                 parseCount(post.shares),
               )}
             </div>
-            <div className="text-white/70 font-light text-sm tracking-widest uppercase mt-2" style={{ fontFamily: MONO }}>Total Impressions</div>
+            <div className="text-white/70 font-light text-sm tracking-widest uppercase mt-2" style={{ fontFamily: MONO }}>{post.views === '—' ? 'Total Engagement' : 'Total Impressions'}</div>
           </div>
           <div className="flex flex-wrap justify-center md:justify-start gap-x-5 gap-y-3 md:gap-7">
             {[

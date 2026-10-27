@@ -147,29 +147,21 @@ function lookupImageUrl(url, width = 900, height = 0) {
 // exposes publicly are filled; reach/impressions/demographics stay empty (they
 // need the creator's own token), so those card sections hide themselves.
 function lookupToApiShape(d) {
-  // Public lookup only exposes likes + comments per post. Views / saves / shares
-  // are owner-only, so — like reach & impressions below — they're SAMPLE values
-  // scaled from the real engagement (comments stand in when likes are hidden),
-  // instead of a card full of zeros. Replaced by real numbers once connected.
-  const media = (d.recentPosts || []).map((p) => {
-    const likes = p.likes || 0
-    const comments = p.comments || 0
-    const base = likes || comments * 20
-    return {
-      id: p.id,
-      caption: p.caption || '',
-      media_type: p.isVideo ? 'VIDEO' : 'IMAGE',
-      media_url: lookupImageUrl(p.thumbnail),
-      thumbnail_url: lookupImageUrl(p.thumbnail),
-      raw_media_url: p.thumbnail,
-      permalink: p.permalink,
-      like_count: likes,
-      comments_count: comments,
-      views: Math.round((base + comments) * (p.isVideo ? 20 : 10)),
-      saved: Math.round(base * 0.06),
-      shares: Math.round(base * 0.03),
-    }
-  })
+  // Per-post stats here are REAL or absent — never invented, because they decide
+  // which posts rank as "top". Public lookup only exposes likes + comments;
+  // likes come through as null when the owner hides them, views/saves/shares
+  // are owner-only and stay undefined (the Top Posts card shows "—" for them).
+  const media = (d.recentPosts || []).map((p) => ({
+    id: p.id,
+    caption: p.caption || '',
+    media_type: p.isVideo ? 'VIDEO' : 'IMAGE',
+    media_url: lookupImageUrl(p.thumbnail),
+    thumbnail_url: lookupImageUrl(p.thumbnail),
+    raw_media_url: p.thumbnail,
+    permalink: p.permalink,
+    like_count: p.likes ?? null,
+    comments_count: p.comments || 0,
+  }))
   // Sample (dummy) collaborations + packages shown ONLY in the lookup preview,
   // so a creator who isn't on Creasume yet can see what their full card would
   // look like. Real followers/likes/comments stay real; these are placeholders.
@@ -912,11 +904,12 @@ export function mapInfluenceData(api, d) {
       caption: p.caption ? p.caption.slice(0, 60) : 'Top post',
       type: p.type,
       // Per-post stats (this post only, not account totals).
-      views: formatCount(p.views) ?? '0',
-      likes: formatCount(p.likes) ?? '0',
+      // In the public-lookup demo a missing stat is "not available", not zero.
+      views: formatCount(p.views) ?? (api.isLookupPreview ? '—' : '0'),
+      likes: formatCount(p.likes) ?? (api.isLookupPreview ? '—' : '0'),
       comments: formatCount(p.comments) ?? '0',
-      saves: formatCount(p.saves) ?? '0',
-      shares: formatCount(p.shares) ?? '0',
+      saves: formatCount(p.saves) ?? (api.isLookupPreview ? '—' : '0'),
+      shares: formatCount(p.shares) ?? (api.isLookupPreview ? '—' : '0'),
       likeCount: p.likes || 0,
     }))
   }
