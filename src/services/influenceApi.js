@@ -897,7 +897,26 @@ export function mapInfluenceData(api, d) {
           likes: m.like_count, comments: m.comments_count, saves: m.saved, shares: m.shares, views: m.views,
         }))
   if (ranked.length) {
-    TOP_POSTS = ranked.slice(0, 3).map((p) => ({
+    // Demo only: Instagram withholds views/saves/shares (and hidden likes) for
+    // other people's accounts, so fill them with SAMPLE values. Seeded from the
+    // post so they're stable across renders. Ranking above uses real data only.
+    const rnd = (p, k) => {
+      let h = 2166136261
+      for (const c of `${p.permalink || p.caption || ''}|${k}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619)
+      return ((h >>> 0) % 1000) / 1000
+    }
+    const fill = (p) => {
+      if (!api.isLookupPreview) return p
+      const likes = p.likes ?? Math.round((p.comments || 10) * (14 + rnd(p, 'l') * 10))
+      return {
+        ...p,
+        likes,
+        views: p.views ?? Math.round(likes * (18 + rnd(p, 'v') * 14)),
+        saves: p.saves ?? Math.round(likes * (0.04 + rnd(p, 's') * 0.05)),
+        shares: p.shares ?? Math.round(likes * (0.02 + rnd(p, 'h') * 0.03)),
+      }
+    }
+    TOP_POSTS = ranked.slice(0, 3).map(fill).map((p) => ({
       photo: p.photo,
       photoFallback: p.photoFallback || '',
       permalink: p.permalink || '',
