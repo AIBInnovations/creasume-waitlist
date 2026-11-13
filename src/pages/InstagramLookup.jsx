@@ -7,7 +7,6 @@ const USERNAME_RE = /^[a-zA-Z0-9._]{1,30}$/
 export default function InstagramLookup() {
   const [username, setUsername] = useState('')
   const [error, setError] = useState('')
-
   const submit = (event) => {
     event.preventDefault()
     const clean = username.trim().replace(/^@+/, '')

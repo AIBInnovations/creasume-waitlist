@@ -283,6 +283,7 @@ export const deleteAccount = () => dapi.del('/creator/me')
 
 // ---- Inquiries (private) ----
 export const fetchMyInquiries = () => dapi.get('/inquiry/my-inquiries')
+export const deleteInquiry = (id) => dapi.del(`/inquiry/delete/${encodeURIComponent(id)}`)
 // On accept (status 'actioned') the backend emails the brand the creator's
 // shared contact + optional message, so pass them through here.
 export const setInquiryStatus = (id, status, share = {}) =>

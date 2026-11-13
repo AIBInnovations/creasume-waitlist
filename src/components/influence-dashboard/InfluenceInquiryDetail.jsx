@@ -3,12 +3,13 @@
 // Collaboration" modal → marks the inquiry actioned) or decline. Live data from
 // GET /inquiry/my-inquiries; status writes via PUT /inquiry/update-status/:id.
 import { useState, useEffect } from 'react'
-import { FONT, MONO } from '../influence/influenceData.js'
+import { FONT } from '../influence/influenceData.js'
 import { goToPath } from '../../router.js'
 import {
   fetchMyInquiries,
   fetchMe,
   setInquiryStatus,
+  deleteInquiry,
   updateProfile,
   mapInquiry,
   isLoggedIn,
@@ -204,13 +205,13 @@ export default function InfluenceInquiryDetail({ username, id }) {
   const [contact, setContact] = useState({ instagram: '', email: '' })
   const [status, setStatus] = useState('PENDING')
   const [showAccept, setShowAccept] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => isLoggedIn())
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
     let alive = true
-    if (!isLoggedIn()) { setLoading(false); return }
+    if (!isLoggedIn()) return
     Promise.all([fetchMyInquiries(), fetchMe().catch(() => null)])
       .then(([inqRes, meRes]) => {
         if (!alive) return
@@ -265,6 +266,17 @@ export default function InfluenceInquiryDetail({ username, id }) {
     } finally {
       setSaving(false)
     }
+  }
+
+  const removeInquiry = async () => {
+    if (!window.confirm('Delete this inquiry? This cannot be undone.')) return
+    setSaving(true)
+    setError('')
+    try {
+      await deleteInquiry(id)
+      goToPath(inquiriesPath(handle))
+    } catch (e) { setError(e.message || 'Failed to delete inquiry. Please try again.') }
+    finally { setSaving(false) }
   }
 
   if (!isLoggedIn()) {
@@ -420,6 +432,7 @@ export default function InfluenceInquiryDetail({ username, id }) {
           </div>
 
           {/* Actions */}
+          <button type="button" onClick={removeInquiry} disabled={saving} className="text-[#FB7185] text-sm font-semibold disabled:opacity-50" style={{ fontFamily: FONT }}>Delete inquiry</button>
           <div className="h-px w-full my-8" style={{ background: 'rgba(255,255,255,0.08)' }} />
 
           {status === 'ACCEPTED' ? (

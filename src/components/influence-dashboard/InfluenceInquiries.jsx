@@ -8,6 +8,7 @@ import UpgradeModal from './UpgradeModal.jsx'
 import { showUpgrade } from './upgradePrompt.js'
 import {
   fetchMyInquiries,
+  deleteInquiry,
   mapInquiry,
   isLoggedIn,
   loginUrl,
@@ -35,7 +36,7 @@ function StatusBadge({ status }) {
       className="text-[11px] font-bold tracking-wider px-3 py-1 rounded-full"
       style={{ fontFamily: MONO, color, background: bg, border: `1px solid ${border}` }}
     >
-      {status}
+      {status === 'DECLINED' ? 'REJECTED' : status}
     </span>
   )
 }
@@ -43,8 +44,22 @@ function StatusBadge({ status }) {
 export default function InfluenceInquiries({ username }) {
   const handle = username || dashboardUsername()
   const [inquiries, setInquiries] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => isLoggedIn())
   const [error, setError] = useState('')
+  const [filter, setFilter] = useState('ALL')
+  const [deleting, setDeleting] = useState('')
+  const [deleteError, setDeleteError] = useState('')
+  const filteredInquiries = inquiries.filter((q) => filter === 'ALL' || q.status === filter)
+  const removeInquiry = async (q) => {
+    if (!window.confirm(`Delete the inquiry from ${q.brand.name}? This cannot be undone.`)) return
+    setDeleting(q.id)
+    setDeleteError('')
+    try {
+      await deleteInquiry(q.id)
+      setInquiries((items) => items.filter((item) => item.id !== q.id))
+    } catch (e) { setDeleteError(e.message || 'Failed to delete inquiry. Please try again.') }
+    finally { setDeleting('') }
+  }
   // Brands can always SEND an inquiry — reading them is the paid feature. When
   // the plan doesn't include it the backend returns { locked, count } instead of
   // the content, so we can tell the creator exactly how many are waiting.
@@ -53,7 +68,7 @@ export default function InfluenceInquiries({ username }) {
 
   useEffect(() => {
     let alive = true
-    if (!isLoggedIn()) { setLoading(false); return }
+    if (!isLoggedIn()) return
     fetchMyInquiries()
       .then((res) => {
         if (!alive) return
@@ -119,6 +134,16 @@ export default function InfluenceInquiries({ username }) {
           </div>
         </div>
 
+        {isLoggedIn() && !loading && !locked && !error && (
+          <div className="flex flex-wrap gap-3 mb-6" aria-label="Filter inquiries by status">
+            {[['ALL', 'All'], ['ACCEPTED', 'Accepted'], ['DECLINED', 'Rejected'], ['PENDING', 'Pending']].map(([value, label]) => (
+              <button key={value} type="button" aria-pressed={filter === value} onClick={() => setFilter(value)} className="rounded-full px-4 py-2 text-sm border" style={{ fontFamily: FONT, color: filter === value ? '#fff' : '#aaa', background: filter === value ? '#6947b8' : 'transparent', borderColor: 'rgba(255,255,255,.2)' }}>
+                {label} ({inquiries.filter((q) => value === 'ALL' || q.status === value).length})
+              </button>
+            ))}
+          </div>
+        )}
+        {deleteError && <p role="alert" className="text-[#FB7185] mb-4">{deleteError}</p>}
         {!isLoggedIn() ? (
           <div className="rounded-2xl px-6 py-12 text-center" style={{ background: 'rgba(13,16,45,0.55)', border: '1px solid rgba(255,255,255,0.08)' }}>
             <p className="text-white/70 text-[16px] mb-5" style={{ fontFamily: FONT }}>Sign in to view your brand inquiries.</p>
@@ -179,7 +204,8 @@ export default function InfluenceInquiries({ username }) {
           </div>
         ) : (
           <div className="flex flex-col gap-5">
-            {inquiries.map((q) => (
+            {filteredInquiries.length === 0 && <p className="text-white/55 py-8">No {filter.toLowerCase() === 'declined' ? 'rejected' : filter.toLowerCase()} inquiries.</p>}
+            {filteredInquiries.map((q) => (
               <div
                 key={q.id}
                 className="group rounded-2xl px-6 md:px-8 py-6 transition-colors"
@@ -201,6 +227,7 @@ export default function InfluenceInquiries({ username }) {
                       {q.detail}
                     </p>
                   </div>
+                  <div className="flex flex-col items-end gap-4">
                   <button
                     type="button"
                     onClick={() => goToPath(inquiryDetailPath(handle, q.id))}
@@ -209,6 +236,10 @@ export default function InfluenceInquiries({ username }) {
                   >
                     View Details {ICONS.external}
                   </button>
+                  <button type="button" onClick={() => removeInquiry(q)} disabled={Boolean(deleting)} className="text-sm text-[#FB7185] disabled:opacity-50" style={{ fontFamily: FONT }} aria-label={`Delete inquiry from ${q.brand.name}`}>
+                    {deleting === q.id ? 'Deleting...' : 'Delete inquiry'}
+                  </button>
+                  </div>
                 </div>
               </div>
             ))}
